@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller\DefaultController;
+namespace App\Controller;
 
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DefaultController extends AbstractController
@@ -12,7 +13,7 @@ class DefaultController extends AbstractController
     public function ping()
     {
         return $this->json([
-            'message' => 'pong'
+            'message' => 'Bienvenue sur l\'api de Swoome'
         ]);
     }
 }
