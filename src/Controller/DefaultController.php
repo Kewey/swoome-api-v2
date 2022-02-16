@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Controller\DefaultController;
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class DefaultController extends AbstractController
