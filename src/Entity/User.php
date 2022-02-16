@@ -14,10 +14,18 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ApiResource(attributes: [
-    'normalization_context' => ['groups' => ['read']],
-    'denormalization_context' => ['groups' => ['write']],
-])]
+#[ApiResource(
+    attributes: [
+        'normalization_context' => ['groups' => ['read']],
+        'denormalization_context' => ['groups' => ['write']],
+    ],
+    collectionOperations: [
+        'post' => [
+            "method" => "POST",
+            'path' => '/auth/register',
+        ],
+    ]
+)]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
