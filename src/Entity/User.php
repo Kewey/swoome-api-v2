@@ -11,13 +11,14 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     attributes: [
-        'normalization_context' => ['groups' => ['read']],
-        'denormalization_context' => ['groups' => ['write']],
+        'normalization_context' => ['groups' => ['user:read']],
+        'denormalization_context' => ['groups' => ['user:write']],
     ],
     collectionOperations: [
         'post' => [
@@ -31,9 +32,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["user:read", "group:read"])]
     private $id;
 
-    #[Groups(["read", "write"])]
+    #[Groups(["user:read", "user:write"])]
     #[ORM\Column(type: 'string', length: 180, unique: true)]
     private $email;
 
@@ -41,13 +43,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
-    #[Groups(["write"])]
+    #[Groups(["user:write"])]
     private $password;
 
-    #[Groups(["read", "write"])]
+    #[Groups(["user:read", "user:write", "group:read"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $username;
 
+    #[Groups(["user:read", "user:write"])]
+    #[ApiSubresource]
     #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members')]
     private $groups;
 

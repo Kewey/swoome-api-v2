@@ -7,24 +7,34 @@ use App\Repository\GroupRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: GroupRepository::class)]
 #[ORM\Table(name: '`group`')]
-#[ApiResource]
+#[ApiResource(
+    attributes: [
+        'normalization_context' => ['groups' => ['group:read']],
+        'denormalization_context' => ['groups' => ['group:write']],
+    ],
+)]
 class Group
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["group:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["group:read", "group:write"])]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["group:read", "group:write"])]
     private $type;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groups')]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groups', cascade: ['persist'])]
+    #[Groups(["user:read", "user:write", "group:write", "group:read"])]
     private $members;
 
     public function __construct()
