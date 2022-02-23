@@ -55,9 +55,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members')]
     private $groups;
 
+    #[ORM\OneToMany(mappedBy: 'made_by', targetEntity: Expense::class)]
+    #[ApiSubresource]
+    private $createdExpenses;
+
+    #[ORM\ManyToMany(targetEntity: Expense::class, mappedBy: 'participants')]
+    private $participatedExpenses;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
+        $this->createdExpenses = new ArrayCollection();
+        $this->participatedExpenses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -175,6 +184,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->groups->removeElement($group)) {
             $group->removeMember($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Expense[]
+     */
+    public function getCreatedExpenses(): Collection
+    {
+        return $this->createdExpenses;
+    }
+
+    public function addExpense(Expense $createdExpense): self
+    {
+        if (!$this->createdExpenses->contains($createdExpense)) {
+            $this->createdExpenses[] = $createdExpense;
+            $createdExpense->setMadeBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpense(Expense $createdExpense): self
+    {
+        if ($this->createdExpenses->removeElement($createdExpense)) {
+            // set the owning side to null (unless already changed)
+            if ($createdExpense->getMadeBy() === $this) {
+                $createdExpense->setMadeBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Expense[]
+     */
+    public function getParticipatedExpenses(): Collection
+    {
+        return $this->participatedExpenses;
+    }
+
+    public function addParticipatedExpense(Expense $participatedExpense): self
+    {
+        if (!$this->participatedExpenses->contains($participatedExpense)) {
+            $this->participatedExpenses[] = $participatedExpense;
+            $participatedExpense->addParticipant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipatedExpense(Expense $participatedExpense): self
+    {
+        if ($this->participatedExpenses->removeElement($participatedExpense)) {
+            $participatedExpense->removeParticipant($this);
         }
 
         return $this;
