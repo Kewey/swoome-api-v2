@@ -36,7 +36,10 @@ use App\Controller\GetCurrentUserController;
                 "parameters" => []
             ],
             "read" => false
-        ]
+        ],
+        'put' => [
+            "method" => "PUT",
+        ],
     ]
 
 )]

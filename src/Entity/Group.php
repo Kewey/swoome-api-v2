@@ -35,7 +35,7 @@ class Group
     private $type;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groups', cascade: ['persist'])]
-    #[Groups(["user:read", "user:write", "group:write", "group:read"])]
+    #[Groups(["user:write", "group:write", "group:read"])]
     private $members;
 
     #[ORM\OneToMany(mappedBy: 'expenseGroup', targetEntity: Expense::class)]
