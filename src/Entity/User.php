@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Controller\GetCurrentUserController;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -25,7 +26,19 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
             "method" => "POST",
             'path' => '/auth/register',
         ],
+    ],
+    itemOperations: [
+        "get_me" => [
+            "method" => "GET",
+            "path" => "/me",
+            "controller" => GetCurrentUserController::class,
+            "openapi_context" => [
+                "parameters" => []
+            ],
+            "read" => false
+        ]
     ]
+
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

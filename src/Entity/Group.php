@@ -27,11 +27,11 @@ class Group
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["group:read", "group:write"])]
+    #[Groups(["group:read", "group:write", "user:read"])]
     private $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["group:read", "group:write"])]
+    #[Groups(["group:read", "group:write", "user:read"])]
     private $type;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groups', cascade: ['persist'])]
