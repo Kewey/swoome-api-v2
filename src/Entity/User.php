@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Controller\GetCurrentUserController;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -25,6 +26,7 @@ use App\Controller\GetCurrentUserController;
         'post' => [
             "method" => "POST",
             'path' => '/auth/register',
+            "validation_groups" => ["Default", "create"]
         ],
     ],
     itemOperations: [
@@ -59,8 +61,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $roles = [];
 
     #[ORM\Column(type: 'string')]
-    #[Groups(["user:write"])]
     private $password;
+
+    #[SerializedName("password")]
+    #[Groups(["user:write"])]
+    #[Assert\NotBlank(["groups" => ["create"]])]
+    private $plainPassword;
 
     #[Groups(["user:read", "user:write", "group:read"])]
     #[ORM\Column(type: 'string', length: 255)]
@@ -136,13 +142,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getPassword(): string
     {
-        return $this->password;
+        return (string) $this->password;
     }
 
     public function setPassword(string $password): self
     {
         $this->password = $password;
 
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
         return $this;
     }
 
@@ -163,7 +180,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function eraseCredentials()
     {
         // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        $this->plainPassword = null;
     }
 
     public function getUsername(): string

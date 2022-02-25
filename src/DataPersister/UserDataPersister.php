@@ -1,33 +1,24 @@
 <?php
-// src/DataPersister/UserDataPersister.php
 
 namespace App\DataPersister;
 
+use ApiPlatform\Core\DataPersister\DataPersisterInterface;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-/**
- *
- */
-class UserDataPersister implements ContextAwareDataPersisterInterface
+class UserDataPersister implements DataPersisterInterface
 {
-    private $_entityManager;
-    private $_passwordHasher;
+    private $entityManager;
+    private $passwordHasher;
 
-    public function __construct(
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher
-    ) {
-        $this->_entityManager = $entityManager;
-        $this->_passwordHasher = $passwordHasher;
+    public function __construct(EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->entityManager = $entityManager;
+        $this->passwordHasher = $passwordHasher;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supports($data, array $context = []): bool
+    public function supports($data): bool
     {
         return $data instanceof User;
     }
@@ -35,27 +26,22 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
     /**
      * @param User $data
      */
-    public function persist($data, array $context = [])
+    public function persist($data)
     {
-        if ($data->getPassword()) {
+        if ($data->getPlainPassword()) {
             $data->setPassword(
-                $this->_passwordHasher->hashPassword(
-                    $data,
-                    $data->getPassword()
-                )
+                $this->passwordHasher->hashPassword($data, $data->getPlainPassword())
             );
+            $data->eraseCredentials();
         }
 
-        $this->_entityManager->persist($data);
-        $this->_entityManager->flush();
+        $this->entityManager->persist($data);
+        $this->entityManager->flush();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($data, array $context = [])
+    public function remove($data)
     {
-        $this->_entityManager->remove($data);
-        $this->_entityManager->flush();
+        $this->entityManager->remove($data);
+        $this->entityManager->flush();
     }
 }
