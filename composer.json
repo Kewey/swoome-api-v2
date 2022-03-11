@@ -73,7 +73,7 @@
       "@auto-scripts"
     ],
     "compile": [
-      "php bin/console doctrine:migrations:migrate && php bin/console doctrine:fixtures:load && php bin/console lexik:jwt:generate-keypair --overwrite --quiet --env prod"
+      "php bin/console doctrine:migrations:migrate && php bin/console doctrine:fixtures:load --env=prod --append && php bin/console lexik:jwt:generate-keypair --overwrite --quiet --env prod"
     ]
   },
   "conflict": {
