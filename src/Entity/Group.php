@@ -30,10 +30,6 @@ class Group
     #[Groups(["group:read", "group:write", "user:read"])]
     private $name;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["group:read", "group:write", "user:read"])]
-    private $type;
-
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groups', cascade: ['persist'])]
     #[Groups(["user:write", "group:write", "group:read"])]
     private $members;
@@ -41,6 +37,11 @@ class Group
     #[ORM\OneToMany(mappedBy: 'expenseGroup', targetEntity: Expense::class)]
     #[ApiSubresource]
     private $expenses;
+
+    #[ORM\ManyToOne(targetEntity: GroupType::class, inversedBy: 'groups')]
+    #[Groups(["group:read", "group:write", "group_type:read"])]
+    #[ORM\JoinColumn(nullable: false)]
+    private $type;
 
     public function __construct()
     {
@@ -61,18 +62,6 @@ class Group
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): self
-    {
-        $this->type = $type;
 
         return $this;
     }
@@ -127,6 +116,18 @@ class Group
                 $expense->setExpenseGroup(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getType(): ?GroupType
+    {
+        return $this->type;
+    }
+
+    public function setType(?GroupType $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }
