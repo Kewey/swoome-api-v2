@@ -28,8 +28,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             'path' => '/auth/register',
             "validation_groups" => ["Default", "create"]
         ],
+        'get',
     ],
     itemOperations: [
+        'get',
         "get_me" => [
             "method" => "GET",
             "path" => "/me",
@@ -39,9 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             "read" => false
         ],
-        'put' => [
-            "method" => "PUT",
-        ],
+        'put',
     ]
 
 )]

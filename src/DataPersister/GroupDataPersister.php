@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use Symfony\Component\Security\Core\Security;
 
 /**
  *
@@ -17,11 +18,14 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
      * @var EntityManagerInterface
      */
     private $entityManager;
+    private $security;
 
     public function __construct(
         EntityManagerInterface $entityManager,
+        Security $security
     ) {
         $this->entityManager = $entityManager;
+        $this->security = $security;
     }
 
     /**
@@ -37,11 +41,13 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
      */
     public function persist($data, array $context = []): void
     {
+        $currentUser = $this->security->getUser();
+        $data->addMember($currentUser);
+
         $userRepository = $this->entityManager->getRepository(User::class);
         foreach ($data->getMembers() as $user) {
             /** @var UserRepository $userRepository */
             $u = $userRepository->findOneByEmail($user->getEmail());
-
             // if the user exists, don't persist it
             if ($u !== null) {
                 $data->removeMember($user);
