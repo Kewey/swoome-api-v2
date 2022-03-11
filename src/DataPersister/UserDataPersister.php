@@ -26,7 +26,7 @@ class UserDataPersister implements DataPersisterInterface
     /**
      * @param User $data
      */
-    public function persist($data)
+    public function persist($data): void
     {
         if ($data->getPlainPassword()) {
             $data->setPassword(

@@ -6,9 +6,6 @@ namespace App\DataPersister;
 use App\Entity\User;
 use App\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 
 /**
@@ -19,26 +16,12 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
     /**
      * @var EntityManagerInterface
      */
-    private $_entityManager;
-
-    /**
-     * @param SluggerInterface
-     */
-    private $_slugger;
-
-    /**
-     * @param Request
-     */
-    private $_request;
+    private $entityManager;
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        SluggerInterface $slugger,
-        RequestStack $request
     ) {
-        $this->_entityManager = $entityManager;
-        $this->_slugger = $slugger;
-        $this->_request = $request->getCurrentRequest();
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -52,10 +35,11 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
     /**
      * @param Group $data
      */
-    public function persist($data, array $context = [])
+    public function persist($data, array $context = []): void
     {
-        $userRepository = $this->_entityManager->getRepository(User::class);
+        $userRepository = $this->entityManager->getRepository(User::class);
         foreach ($data->getMembers() as $user) {
+            /** @var UserRepository $userRepository */
             $u = $userRepository->findOneByEmail($user->getEmail());
 
             // if the user exists, don't persist it
@@ -63,12 +47,12 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
                 $data->removeMember($user);
                 $data->addMember($u);
             } else {
-                $this->_entityManager->persist($user);
+                $this->entityManager->persist($user);
             }
         }
 
-        $this->_entityManager->persist($data);
-        $this->_entityManager->flush();
+        $this->entityManager->persist($data);
+        $this->entityManager->flush();
     }
 
     /**
@@ -76,7 +60,7 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
      */
     public function remove($data, array $context = [])
     {
-        $this->_entityManager->remove($data);
-        $this->_entityManager->flush();
+        $this->entityManager->remove($data);
+        $this->entityManager->flush();
     }
 }
