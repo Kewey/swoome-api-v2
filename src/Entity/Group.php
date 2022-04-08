@@ -14,6 +14,7 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 #[ORM\Table(name: '`group`')]
 #[ApiResource(
     attributes: [
+        "force_eager"=>false,
         'normalization_context' => ['groups' => ['group:read']],
         'denormalization_context' => ['groups' => ['group:write']],
     ],
@@ -35,6 +36,7 @@ class Group
     private $members;
 
     #[ORM\OneToMany(mappedBy: 'expenseGroup', targetEntity: Expense::class)]
+    #[Groups(["expense:write", "group:write", "group:read"])]
     #[ApiSubresource]
     private $expenses;
 

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\ExpenseRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,8 +13,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ExpenseRepository::class)]
 #[ApiResource(
     attributes: [
-        'normalization_context' => ['groups' => ['expense:read']],
-        'denormalization_context' => ['groups' => ['expense:write']],
+        "force_eager" => false,
+        'normalization_context' => ['groups' => ['expense:read'], "enable_max_depth" => true],
+        'denormalization_context' => ['groups' => ['expense:write'], "enable_max_depth" => true],
     ],
 )]
 class Expense
@@ -42,13 +44,17 @@ class Expense
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'createdExpenses')]
     #[ORM\JoinColumn(nullable: false)]
-    private $made_by;
+    #[Groups(["expense:read", "expense:write", "user:read", "group:read"])]
+    private $madeBy;
 
     #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'expenses')]
+    #[ApiSubresource]
+    #[Groups(["expense:read", "expense:write", "group:read"])]
     #[ORM\JoinColumn(nullable: false)]
     private $expenseGroup;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'participatedExpenses')]
+    #[Groups(["expense:read", "expense:write", "user:read"])]
     private $participants;
 
     public function __construct()
@@ -112,12 +118,12 @@ class Expense
 
     public function getMadeBy(): ?User
     {
-        return $this->made_by;
+        return $this->madeBy;
     }
 
-    public function setMadeBy(?User $made_by): self
+    public function setMadeBy(?User $madeBy): self
     {
-        $this->made_by = $made_by;
+        $this->madeBy = $madeBy;
 
         return $this;
     }
