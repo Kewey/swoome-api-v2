@@ -51,7 +51,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["user:read", "group:read"])]
+    #[Groups(["user:read", "group:read", "expense:read"])]
     private $id;
 
     #[Groups(["user:read", "user:write"])]
@@ -69,7 +69,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(["groups" => ["create"]])]
     private $plainPassword;
 
-    #[Groups(["user:read", "user:write", "group:read"])]
+    #[Groups(["user:read", "user:write", "group:read", "expense:read"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $username;
 
