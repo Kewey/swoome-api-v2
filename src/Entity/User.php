@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Controller\GetCurrentUserController;
+use ApiPlatform\Core\Annotation\ApiProperty;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -27,7 +28,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         'post' => [
             "method" => "POST",
             'path' => '/auth/register',
-            "validation_groups" => ["Default", "create"]
+            "validation_groups" => ["Default", "create"],
+            'input_formats' => [
+                'multipart' => ['multipart/form-data'],
+            ],
         ],
         'get',
     ],
@@ -86,6 +90,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Expense::class, mappedBy: 'participants')]
     #[Groups(["user:read", "user:write"])]
     private $participatedExpenses;
+
+    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(["user:read", "user:write"])]
+    #[ApiProperty(iri: 'http://schema.org/image')]
+    public ?MediaObject $image = null;
 
     public function __construct()
     {
