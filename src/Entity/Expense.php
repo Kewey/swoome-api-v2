@@ -57,6 +57,10 @@ class Expense
     #[Groups(["expense:read", "expense:write", "user:read"])]
     private $participants;
 
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(["expense:read", "expense:write"])]
+    private $expenseAt;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -160,6 +164,18 @@ class Expense
     public function removeParticipant(User $participant): self
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    public function getExpenseAt(): ?\DateTimeImmutable
+    {
+        return $this->expenseAt;
+    }
+
+    public function setExpenseAt(\DateTimeImmutable $expenseAt): self
+    {
+        $this->expenseAt = $expenseAt;
 
         return $this;
     }
