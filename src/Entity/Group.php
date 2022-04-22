@@ -14,7 +14,7 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 #[ORM\Table(name: '`group`')]
 #[ApiResource(
     attributes: [
-        "force_eager"=>false,
+        "force_eager" => false,
         'normalization_context' => ['groups' => ['group:read']],
         'denormalization_context' => ['groups' => ['group:write']],
     ],
@@ -132,5 +132,15 @@ class Group
         $this->type = $type;
 
         return $this;
+    }
+
+    #[Groups("group:read")]
+    public function getChart(): int
+    {
+        $total = 0;
+        foreach ($this->expenses as $expense) {
+            $total += $expense->getPrice();
+        }
+        return $total;
     }
 }

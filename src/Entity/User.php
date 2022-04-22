@@ -29,9 +29,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             "method" => "POST",
             'path' => '/auth/register',
             "validation_groups" => ["Default", "create"],
-            'input_formats' => [
-                'multipart' => ['multipart/form-data'],
-            ],
         ],
         'get',
     ],
