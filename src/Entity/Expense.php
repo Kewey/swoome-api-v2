@@ -44,12 +44,11 @@ class Expense
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'createdExpenses')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["expense:read", "expense:write", "user:read", "group:read"])]
+    #[Groups(["expense:read", "expense:write", "user:read"])]
     private $madeBy;
 
     #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'expenses')]
     #[ApiSubresource]
-    #[Groups(["expense:read", "expense:write", "group:read"])]
     #[ORM\JoinColumn(nullable: false)]
     private $expenseGroup;
 
@@ -61,10 +60,15 @@ class Expense
     #[Groups(["expense:read", "expense:write"])]
     private $expenseAt;
 
+    #[Groups(["expense:read"])]
+    #[ORM\OneToMany(mappedBy: 'expense', targetEntity: Balance::class)]
+    private $balances;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
         $this->createdAt = new \DateTime();
+        $this->balances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -176,6 +180,36 @@ class Expense
     public function setExpenseAt(\DateTimeImmutable $expenseAt): self
     {
         $this->expenseAt = $expenseAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Balance[]
+     */
+    public function getBalances(): Collection
+    {
+        return $this->balances;
+    }
+
+    public function addBalance(Balance $balance): self
+    {
+        if (!$this->balances->contains($balance)) {
+            $this->balances[] = $balance;
+            $balance->setExpense($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBalance(Balance $balance): self
+    {
+        if ($this->balances->removeElement($balance)) {
+            // set the owning side to null (unless already changed)
+            if ($balance->getExpense() === $this) {
+                $balance->setExpense(null);
+            }
+        }
 
         return $this;
     }

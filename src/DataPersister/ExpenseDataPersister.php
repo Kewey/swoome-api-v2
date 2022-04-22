@@ -6,7 +6,9 @@ namespace App\DataPersister;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use App\Entity\Balance;
 use App\Entity\Expense;
+use App\Repository\BalanceRepository;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -22,10 +24,12 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        Security $security
+        Security $security,
+        BalanceRepository $balanceRepository
     ) {
         $this->entityManager = $entityManager;
         $this->security = $security;
+        $this->balanceRepository = $balanceRepository;
     }
 
     /**
@@ -49,6 +53,20 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
 
         foreach ($data->getParticipants() as $user) {
             $this->entityManager->persist($user);
+            $balance = new Balance;
+            $balance->setBalanceUser($user);
+            $balance->setExpense($data);
+            if ($user == $data->getMadeBy()) {
+                $balanceValue = $data->getPrice() / $data->getParticipants()->count();
+            } else {
+                $balanceValue = - ($data->getPrice() / $data->getParticipants()->count());
+            }
+            $lastBalance = $this->balanceRepository->findLastBalance($user, $data->getExpenseGroup());
+            if ($lastBalance) {
+                $balanceValue += $lastBalance->getValue();
+            }
+            $balance->setValue($balanceValue);
+            $this->entityManager->persist($balance);
         }
 
         $this->entityManager->persist($data);

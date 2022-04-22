@@ -94,11 +94,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ApiProperty(iri: 'http://schema.org/image')]
     public ?MediaObject $image = null;
 
+    #[ORM\OneToMany(mappedBy: 'balanceUser', targetEntity: Balance::class)]
+    private $balances;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
         $this->createdExpenses = new ArrayCollection();
         $this->participatedExpenses = new ArrayCollection();
+        $this->balances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -284,6 +288,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->participatedExpenses->removeElement($participatedExpense)) {
             $participatedExpense->removeParticipant($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Balance[]
+     */
+    public function getBalances(): Collection
+    {
+        return $this->balances;
+    }
+
+    public function addBalance(Balance $balance): self
+    {
+        if (!$this->balances->contains($balance)) {
+            $this->balances[] = $balance;
+            $balance->setBalanceUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBalance(Balance $balance): self
+    {
+        if ($this->balances->removeElement($balance)) {
+            // set the owning side to null (unless already changed)
+            if ($balance->getBalanceUser() === $this) {
+                $balance->setBalanceUser(null);
+            }
         }
 
         return $this;

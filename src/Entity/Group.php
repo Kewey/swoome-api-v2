@@ -133,14 +133,4 @@ class Group
 
         return $this;
     }
-
-    #[Groups("group:read")]
-    public function getChart(): int
-    {
-        $total = 0;
-        foreach ($this->expenses as $expense) {
-            $total += $expense->getPrice();
-        }
-        return $total;
-    }
 }
