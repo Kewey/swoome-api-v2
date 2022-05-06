@@ -15,6 +15,7 @@ final class CreateMediaObjectAction extends AbstractController
     public function __invoke(Request $request): MediaObject
     {
         $uploadedFile = $request->files->get('file');
+
         if (!$uploadedFile) {
             throw new BadRequestHttpException('"file" is required');
         }

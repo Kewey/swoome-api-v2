@@ -100,6 +100,9 @@
     "gesdinet/jwt-refresh-token-bundle": {
         "version": "v1.0.1"
     },
+    "hashids/hashids": {
+        "version": "4.1.0"
+    },
     "jms/metadata": {
         "version": "2.6.1"
     },

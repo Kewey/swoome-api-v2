@@ -8,6 +8,7 @@ use App\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use Symfony\Component\Security\Core\Security;
+use Hashids\Hashids;
 
 /**
  *
@@ -43,6 +44,11 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
     {
         $currentUser = $this->security->getUser();
         $data->addMember($currentUser);
+
+        $lastGroup = $this->entityManager->getRepository(Group::class)->findOneBy(array(), array('id' => 'DESC'), 1, 0);
+        $lastGroupId = $lastGroup->getId();
+        $hashid = new Hashids("Groups", 6);
+        $data->setCode(strtoupper($hashid->encode($lastGroupId + 1)));
 
         $userRepository = $this->entityManager->getRepository(User::class);
         foreach ($data->getMembers() as $user) {

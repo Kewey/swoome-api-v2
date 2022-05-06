@@ -45,6 +45,10 @@ class Group
     #[ORM\JoinColumn(nullable: false)]
     private $type;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["group:read"])]
+    private $code;
+
     public function __construct()
     {
         $this->members = new ArrayCollection();
@@ -130,6 +134,18 @@ class Group
     public function setType(?GroupType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(string $code): self
+    {
+        $this->code = $code;
 
         return $this;
     }
