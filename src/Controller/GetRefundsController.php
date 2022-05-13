@@ -45,14 +45,19 @@ final class GetRefundsController extends AbstractController
         $group = $this->groupRepository->find($id);
 
         if (!$group) {
-            throw new BadRequestHttpException('Aucun group trouvé');
+            throw new BadRequestHttpException('Aucun groupe trouvé');
         }
 
 
         $balances = [];
         $members = $group->getMembers();
-        foreach ($members as $key => $member) {
-            $balances[] = $this->balanceRepository->findLastBalance($members, $group);
+        foreach ($members as $member) {
+            $balances[$member->getUsername()] = $this->balanceRepository->findLastBalance($member, $group);
+        }
+
+        $refunds = [];
+        foreach ($balances as $key => $balance) {
+            dd($balance);
         }
 
         return 'test';

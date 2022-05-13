@@ -127,6 +127,9 @@
             "./config/packages/lexik_jwt_authentication.yaml"
         ]
     },
+    "monolog/monolog": {
+        "version": "3.0.0"
+    },
     "namshi/jose": {
         "version": "7.2.3"
     },
