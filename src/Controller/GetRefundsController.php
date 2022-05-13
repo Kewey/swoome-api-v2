@@ -55,9 +55,11 @@ final class GetRefundsController extends AbstractController
             $balances[$member->getUsername()] = $this->balanceRepository->findLastBalance($member, $group);
         }
 
+        sort($balances);
+
+
         $refunds = [];
         foreach ($balances as $key => $balance) {
-            dd($balance);
         }
 
         return 'test';

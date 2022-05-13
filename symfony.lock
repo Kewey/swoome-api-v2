@@ -175,6 +175,9 @@
     "psr/log": {
         "version": "1.1.4"
     },
+    "stella-maris/clock": {
+        "version": "0.1.4"
+    },
     "symfony/apache-pack": {
         "version": "1.0",
         "recipe": {
