@@ -88,12 +88,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["user:read", "user:write"])]
     private $participatedExpenses;
 
-    #[ORM\ManyToOne(targetEntity: MediaObject::class)]
-    #[ORM\JoinColumn(nullable: true)]
-    #[Groups(["user:read", "user:write"])]
-    #[ApiProperty(iri: 'http://schema.org/image')]
-    public ?MediaObject $image = null;
-
     #[ORM\OneToMany(mappedBy: 'balanceUser', targetEntity: Balance::class)]
     private $balances;
 
