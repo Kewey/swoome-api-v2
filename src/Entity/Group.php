@@ -46,7 +46,7 @@ class Group
     private $type;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["group:read"])]
+    #[Groups(["group:read", "group:write"])]
     private $code;
 
     public function __construct()

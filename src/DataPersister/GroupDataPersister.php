@@ -45,8 +45,12 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
         $currentUser = $this->security->getUser();
         $data->addMember($currentUser);
 
+        $lastGroupId = 0;
         $lastGroup = $this->entityManager->getRepository(Group::class)->findOneBy(array(), array('id' => 'DESC'), 1, 0);
-        $lastGroupId = $lastGroup->getId();
+        if ($lastGroup) {
+            $lastGroupId = $lastGroup->getId();
+        }
+
         $hashid = new Hashids("Groups", 6);
         $data->setCode(strtoupper($hashid->encode($lastGroupId + 1)));
 

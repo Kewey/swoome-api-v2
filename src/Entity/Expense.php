@@ -50,6 +50,7 @@ class Expense
     #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'expenses')]
     #[ApiSubresource]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["expense:write", "group:write"])]
     private $expenseGroup;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'participatedExpenses')]
