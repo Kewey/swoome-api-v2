@@ -9,6 +9,8 @@ use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Balance;
 use App\Entity\Expense;
 use App\Repository\BalanceRepository;
+use DateTime;
+use DateTimeImmutable;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -49,6 +51,10 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
 
         if (!$data->getMadeBy()) {
             $data->setMadeBy($currentUser);
+        }
+
+        if (!$data->getExpenseAt()) {
+            $data->setExpenseAt(new DateTimeImmutable());
         }
 
         foreach ($data->getParticipants() as $user) {
