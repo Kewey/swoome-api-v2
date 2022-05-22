@@ -35,10 +35,12 @@ final class GetRefundsController extends AbstractController
     }
 
     /**
-     * @Route("/api/groups/{id}/get_refunds", name="get_refunds")
+     * @Route("/api/groups/{id}/refunds", name="get_refunds")
      */
-    public function __invoke($id, Request $request): Response
+    public function getRefunds($id): array
     {
+        $refunds = [];
+
         /**
          * @var Group $group
          */
@@ -55,13 +57,40 @@ final class GetRefundsController extends AbstractController
             $balances[$member->getUsername()] = $this->balanceRepository->findLastBalance($member, $group);
         }
 
-        sort($balances);
+        if ($balances) {
+            $positiveBalances = [];
+            $negativeBalances = [];
+            foreach ($balances as $balance) {
+                if ($balance > 0) {
+                    $positiveBalances[] = $balance;
+                }
+                if ($balance < 0) {
+                    $negativeBalances[] = $balance;
+                }
+
+                rsort($positiveBalances);
+                sort($negativeBalances);
 
 
-        $refunds = [];
-        foreach ($balances as $key => $balance) {
+                foreach ($positiveBalances as $positiveBalance) {
+                    foreach ($negativeBalances as $negativeBalance) {
+                        if ($positiveBalance > 0 && $negativeBalance < 0) {
+                            if (-$negativeBalance < $positiveBalance) {
+                                $newPositiveBalance = $positiveBalance + $negativeBalance;
+                                $newNegativeBalance = $negativeBalance + $negativeBalance;
+                            } else {
+                                $newPositiveBalance = 0;
+                                $newNegativeBalance = $negativeBalance + $positiveBalance;
+                            }
+                            $refunds[] = [$newNegativeBalance - $negativeBalance];
+                            $positiveBalance = $newPositiveBalance;
+                            $negativeBalance = $newNegativeBalance;
+                        }
+                    }
+                }
+            }
         }
 
-        return 'test';
+        return $refunds;
     }
 }

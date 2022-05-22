@@ -48,6 +48,6 @@ class JoinGroupController extends AbstractController
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        return $this->jsonResponseFactory->create($user);
+        return $this->jsonResponseFactory->create($group);
     }
 }
