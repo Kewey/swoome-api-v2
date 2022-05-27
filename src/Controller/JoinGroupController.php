@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Balance;
 use App\Factory\JsonResponseFactory;
 use App\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
@@ -45,6 +46,12 @@ class JoinGroupController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
         $user->addGroup($group);
+
+        $balance = new Balance;
+        $balance->setValue(0);
+        $balance->setBalanceGroup($group);
+        $user->addBalance($balance);
+
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
