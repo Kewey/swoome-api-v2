@@ -50,6 +50,7 @@ class Group
     private $code;
 
     #[ORM\OneToMany(mappedBy: 'refundGroup', targetEntity: Refund::class, orphanRemoval: true)]
+    #[ApiSubresource]
     #[Groups(["refund:write", "group:write", "group:read"])]
     private $refunds;
 
