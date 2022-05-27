@@ -54,11 +54,16 @@ class Group
     #[Groups(["refund:write", "group:write", "group:read"])]
     private $refunds;
 
+    #[ORM\OneToMany(mappedBy: 'balanceGroup', targetEntity: Balance::class, orphanRemoval: true)]
+    #[Groups(["balance:write", "group:write", "group:read"])]
+    private $balances;
+
     public function __construct()
     {
         $this->members = new ArrayCollection();
         $this->expenses = new ArrayCollection();
         $this->refunds = new ArrayCollection();
+        $this->balances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -180,6 +185,36 @@ class Group
             // set the owning side to null (unless already changed)
             if ($refund->getRefundGroup() === $this) {
                 $refund->setRefundGroup(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Balance>
+     */
+    public function getBalances(): Collection
+    {
+        return $this->balances;
+    }
+
+    public function addBalance(Balance $balance): self
+    {
+        if (!$this->balances->contains($balance)) {
+            $this->balances[] = $balance;
+            $balance->setBalanceGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBalance(Balance $balance): self
+    {
+        if ($this->balances->removeElement($balance)) {
+            // set the owning side to null (unless already changed)
+            if ($balance->getBalanceGroup() === $this) {
+                $balance->setBalanceGroup(null);
             }
         }
 

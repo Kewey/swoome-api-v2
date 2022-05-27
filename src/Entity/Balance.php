@@ -22,32 +22,21 @@ class Balance
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\ManyToOne(targetEntity: Expense::class, inversedBy: 'balances')]
-    private $expense;
-
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'balances')]
-    #[Groups(["expense:read", 'balance:read'])]
+    #[Groups(["group:read", 'balance:read'])]
     private $balanceUser;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(["expense:read", 'balance:read'])]
+    #[Groups(["group:read", 'balance:read'])]
     private $value;
+
+    #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'balances')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $balanceGroup;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getExpense(): ?Expense
-    {
-        return $this->expense;
-    }
-
-    public function setExpense(?Expense $expense): self
-    {
-        $this->expense = $expense;
-
-        return $this;
     }
 
     public function getBalanceUser(): ?User
@@ -70,6 +59,18 @@ class Balance
     public function setValue(int $value): self
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getBalanceGroup(): ?Group
+    {
+        return $this->balanceGroup;
+    }
+
+    public function setBalanceGroup(?Group $balanceGroup): self
+    {
+        $this->balanceGroup = $balanceGroup;
 
         return $this;
     }

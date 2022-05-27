@@ -43,7 +43,7 @@ class GetLastBalanceController extends AbstractController
         $balances = [];
         $members = $group->getMembers();
         foreach ($members as $member) {
-            $balances[$member->getUsername()] = $this->balanceRepository->findLastBalance($member, $group);
+            $balances[$member->getUsername()] = $this->balanceRepository->findBalanceByUserByGroup($member, $group);
         }
 
         return $this->jsonResponseFactory->create($balances);

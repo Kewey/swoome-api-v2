@@ -37,16 +37,13 @@ class BalanceRepository extends ServiceEntityRepository
     */
 
 
-    public function findLastBalance($user, $group): ?Balance
+    public function findBalanceByUserByGroup($user, $group): ?Balance
     {
         return $this->createQueryBuilder('b')
-            ->leftJoin('b.expense', 'e')
             ->where('b.balanceUser = :user')
-            ->andWhere('e.expenseGroup = :group')
+            ->andWhere('b.balanceGroup = :group')
             ->setParameter('user', $user)
             ->setParameter('group', $group)
-            ->orderBy("b.id", "DESC")
-            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }

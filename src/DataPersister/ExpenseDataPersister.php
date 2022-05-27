@@ -78,21 +78,25 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
         $balances = [];
         foreach ($data->getParticipants() as $user) {
             $this->entityManager->persist($user);
-            $balance = new Balance;
-            $balance->setBalanceUser($user);
-            $balance->setExpense($data);
             if ($user == $data->getMadeBy()) {
                 $balanceValue = $data->getPrice() - ($data->getPrice() / $data->getParticipants()->count());
             } else {
                 $balanceValue = - ($data->getPrice() / $data->getParticipants()->count());
             }
-            $lastBalance = $this->balanceRepository->findLastBalance($user, $data->getExpenseGroup());
-            if ($lastBalance) {
-                $balanceValue += $lastBalance->getValue();
+
+            $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $data->getExpenseGroup());
+            if (!$lastBalance) {
+                $balance = new Balance;
+                $balance->setBalanceUser($user);
+                $balance->setBalanceGroup($data->getExpenseGroup());
+                $balance->setValue($balanceValue);
+                $this->entityManager->persist($balance);
+                $balances[] = clone $balance;
+            } else {
+                $lastBalance->setValue($lastBalance->getValue() + $balanceValue);
+                $this->entityManager->persist($lastBalance);
+                $balances[] = clone $lastBalance;
             }
-            $balance->setValue($balanceValue);
-            $this->entityManager->persist($balance);
-            $balances[] = clone $balance;
         }
         $this->calculateRefunds($data, $balances);
     }
