@@ -49,10 +49,15 @@ class Group
     #[Groups(["group:read", "group:write"])]
     private $code;
 
+    #[ORM\OneToMany(mappedBy: 'refundGroup', targetEntity: Refund::class, orphanRemoval: true)]
+    #[Groups(["refund:write", "group:write", "group:read"])]
+    private $refunds;
+
     public function __construct()
     {
         $this->members = new ArrayCollection();
         $this->expenses = new ArrayCollection();
+        $this->refunds = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,6 +151,36 @@ class Group
     public function setCode(string $code): self
     {
         $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Refund>
+     */
+    public function getRefunds(): Collection
+    {
+        return $this->refunds;
+    }
+
+    public function addRefund(Refund $refund): self
+    {
+        if (!$this->refunds->contains($refund)) {
+            $this->refunds[] = $refund;
+            $refund->setRefundGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRefund(Refund $refund): self
+    {
+        if ($this->refunds->removeElement($refund)) {
+            // set the owning side to null (unless already changed)
+            if ($refund->getRefundGroup() === $this) {
+                $refund->setRefundGroup(null);
+            }
+        }
 
         return $this;
     }

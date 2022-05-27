@@ -44,6 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             "read" => false
         ],
         'put',
+        'delete',
     ]
 
 )]
@@ -91,12 +92,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'balanceUser', targetEntity: Balance::class)]
     private $balances;
 
+    #[ORM\OneToMany(mappedBy: 'refunder', targetEntity: Refund::class, orphanRemoval: true)]
+    private $refunds;
+
+    #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Refund::class, orphanRemoval: true)]
+    private $refundsReceiver;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
         $this->createdExpenses = new ArrayCollection();
         $this->participatedExpenses = new ArrayCollection();
         $this->balances = new ArrayCollection();
+        $this->refunds = new ArrayCollection();
+        $this->refundsReceiver = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -311,6 +320,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($balance->getBalanceUser() === $this) {
                 $balance->setBalanceUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Refund>
+     */
+    public function getRefunds(): Collection
+    {
+        return $this->refunds;
+    }
+
+    public function addRefund(Refund $refund): self
+    {
+        if (!$this->refunds->contains($refund)) {
+            $this->refunds[] = $refund;
+            $refund->setRefunder($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRefund(Refund $refund): self
+    {
+        if ($this->refunds->removeElement($refund)) {
+            // set the owning side to null (unless already changed)
+            if ($refund->getRefunder() === $this) {
+                $refund->setRefunder(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Refund>
+     */
+    public function getRefundsReceiver(): Collection
+    {
+        return $this->refundsReceiver;
+    }
+
+    public function addRefundsReceiver(Refund $refundsReceiver): self
+    {
+        if (!$this->refundsReceiver->contains($refundsReceiver)) {
+            $this->refundsReceiver[] = $refundsReceiver;
+            $refundsReceiver->setReceiver($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRefundsReceiver(Refund $refundsReceiver): self
+    {
+        if ($this->refundsReceiver->removeElement($refundsReceiver)) {
+            // set the owning side to null (unless already changed)
+            if ($refundsReceiver->getReceiver() === $this) {
+                $refundsReceiver->setReceiver(null);
             }
         }
 
