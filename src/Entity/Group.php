@@ -54,7 +54,7 @@ class Group
     #[Groups(["refund:write", "group:write", "group:read"])]
     private $refunds;
 
-    #[ORM\OneToMany(mappedBy: 'balanceGroup', targetEntity: Balance::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'balanceGroup', targetEntity: Balance::class, orphanRemoval: true, cascade: ["persist"])]
     #[ApiSubresource]
     #[Groups(["balance:write", "group:write", "group:read"])]
     private $balances;

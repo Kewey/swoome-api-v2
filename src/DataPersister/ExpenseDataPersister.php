@@ -3,14 +3,12 @@
 
 namespace App\DataPersister;
 
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Balance;
 use App\Entity\Expense;
 use App\Entity\Refund;
 use App\Repository\BalanceRepository;
-use DateTime;
 use DateTimeImmutable;
 use Symfony\Component\Security\Core\Security;
 

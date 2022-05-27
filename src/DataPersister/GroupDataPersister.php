@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
+use App\Entity\Balance;
 use Symfony\Component\Security\Core\Security;
 use Hashids\Hashids;
 
@@ -23,7 +24,7 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
 
     public function __construct(
         EntityManagerInterface $entityManager,
-        Security $security
+        Security $security,
     ) {
         $this->entityManager = $entityManager;
         $this->security = $security;
@@ -62,6 +63,7 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
             if ($u !== null) {
                 $data->removeMember($user);
                 $data->addMember($u);
+                $data->addBalance($this->createEmptyBalance($u));
             } else {
                 $this->entityManager->persist($user);
             }
@@ -71,6 +73,13 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
         $this->entityManager->flush();
     }
 
+    public function createEmptyBalance($user)
+    {
+        $balance = new Balance;
+        $balance->setValue(0);
+        $balance->setBalanceUser($user);
+        return $balance;
+    }
     /**
      * {@inheritdoc}
      */
