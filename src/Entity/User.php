@@ -98,6 +98,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Refund::class, orphanRemoval: true)]
     private $refundsReceiver;
 
+    #[ORM\Column(type: 'boolean')]
+    #[Groups(["user:read"])]
+    private $isVerified = false;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
@@ -382,6 +386,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $refundsReceiver->setReceiver(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsVerified(): ?bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): self
+    {
+        $this->isVerified = $isVerified;
 
         return $this;
     }
