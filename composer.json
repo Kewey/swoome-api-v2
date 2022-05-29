@@ -6,11 +6,12 @@
   "require": {
     "php": ">=7.2.5",
     "ext-ctype": "*",
-    "ext-iconv": "*",
     "ext-gmp": "*",
+    "ext-iconv": "*",
     "api-platform/core": "^2.6",
     "doctrine/annotations": "^1.13",
     "doctrine/doctrine-bundle": "^2.5",
+    "doctrine/doctrine-fixtures-bundle": "^3.4",
     "doctrine/doctrine-migrations-bundle": "^3.2",
     "doctrine/orm": "^2.11",
     "gesdinet/jwt-refresh-token-bundle": "^1.0",
@@ -89,7 +90,7 @@
     }
   },
   "require-dev": {
-    "symfony/maker-bundle": "^1.34",
-    "symfony/dotenv": "5.4.*"
+    "symfony/dotenv": "5.4.*",
+    "symfony/maker-bundle": "^1.34"
   }
 }
