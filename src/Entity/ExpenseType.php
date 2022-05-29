@@ -32,7 +32,7 @@ class ExpenseType
     private $emoji;
 
     #[ApiSubresource]
-    #[ORM\OneToMany(mappedBy: 'expenseType', targetEntity: Expense::class)]
+    #[ORM\OneToMany(mappedBy: 'type', targetEntity: Expense::class)]
     private $expense;
 
     public function __construct()
@@ -81,7 +81,7 @@ class ExpenseType
     {
         if (!$this->expense->contains($expense)) {
             $this->expense[] = $expense;
-            $expense->setExpenseType($this);
+            $expense->setType($this);
         }
 
         return $this;
@@ -91,8 +91,8 @@ class ExpenseType
     {
         if ($this->expense->removeElement($expense)) {
             // set the owning side to null (unless already changed)
-            if ($expense->getExpenseType() === $this) {
-                $expense->setExpenseType(null);
+            if ($expense->getType() === $this) {
+                $expense->setType(null);
             }
         }
 

@@ -62,7 +62,8 @@ class Expense
     private $expenseAt;
 
     #[ORM\ManyToOne(targetEntity: ExpenseType::class, inversedBy: 'expense')]
-    private $expenseType;
+    #[Groups(["expense:read", "expense:write", "expense_type:read"])]
+    private $type;
 
     public function __construct()
     {
@@ -183,14 +184,14 @@ class Expense
         return $this;
     }
 
-    public function getExpenseType(): ?ExpenseType
+    public function getType(): ?ExpenseType
     {
-        return $this->expenseType;
+        return $this->type;
     }
 
-    public function setExpenseType(?ExpenseType $expenseType): self
+    public function setType(?ExpenseType $type): self
     {
-        $this->expenseType = $expenseType;
+        $this->type = $type;
 
         return $this;
     }
