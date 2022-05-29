@@ -19,6 +19,7 @@ security:
       stateless: true
       refresh_jwt: ~
     login:
+      user_checker: App\Security\UserChecker
       pattern: ^/api/auth
       stateless: true
       json_login:
