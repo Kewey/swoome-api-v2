@@ -61,6 +61,9 @@ class Expense
     #[Groups(["expense:read", "expense:write"])]
     private $expenseAt;
 
+    #[ORM\ManyToOne(targetEntity: ExpenseType::class, inversedBy: 'expense')]
+    private $expenseType;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -176,6 +179,18 @@ class Expense
     public function setExpenseAt(\DateTimeImmutable $expenseAt): self
     {
         $this->expenseAt = $expenseAt;
+
+        return $this;
+    }
+
+    public function getExpenseType(): ?ExpenseType
+    {
+        return $this->expenseType;
+    }
+
+    public function setExpenseType(?ExpenseType $expenseType): self
+    {
+        $this->expenseType = $expenseType;
 
         return $this;
     }
