@@ -35,7 +35,7 @@ class Expense
     private $description;
 
     #[ORM\Column(type: 'integer')]
-    #[Groups(["expense:read", "expense:write"])]
+    #[Groups(["expense:read", "expense:write", "group:read"])]
     private $price;
 
     #[ORM\Column(type: 'datetime')]

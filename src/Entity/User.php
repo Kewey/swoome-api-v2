@@ -81,12 +81,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $groups;
 
     #[ORM\OneToMany(mappedBy: 'madeBy', targetEntity: Expense::class)]
-    #[Groups(["user:read", "user:write"])]
+    #[Groups(["user:write"])]
     #[ApiSubresource]
     private $createdExpenses;
 
     #[ORM\ManyToMany(targetEntity: Expense::class, mappedBy: 'participants')]
-    #[Groups(["user:read", "user:write"])]
+    #[Groups(["user:write"])]
     private $participatedExpenses;
 
     #[ORM\OneToMany(mappedBy: 'balanceUser', targetEntity: Balance::class)]
