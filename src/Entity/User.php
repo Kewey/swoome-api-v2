@@ -20,9 +20,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: '`user`')]
 #[ApiResource(
     attributes: [
-        "force_eager" => false,
-        'normalization_context' => ['groups' => ['user:read'], "enable_max_depth" => true],
-        'denormalization_context' => ['groups' => ['user:write'], "enable_max_depth" => true],
+        'normalization_context' => ['groups' => ['user:read']],
+        'denormalization_context' => ['groups' => ['user:write']],
     ],
     collectionOperations: [
         'post' => [
@@ -89,7 +88,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["user:write"])]
     private $participatedExpenses;
 
-    #[ORM\OneToMany(mappedBy: 'balanceUser', targetEntity: Balance::class)]
+    #[ORM\OneToMany(mappedBy: 'balanceUser', targetEntity: Balance::class, cascade: ['persist'])]
     private $balances;
 
     #[ORM\OneToMany(mappedBy: 'refunder', targetEntity: Refund::class, orphanRemoval: true)]

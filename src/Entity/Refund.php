@@ -10,9 +10,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: RefundRepository::class)]
 #[ApiResource(
     attributes: [
-        "force_eager" => false,
-        'normalization_context' => ['groups' => ['refund:read'], "enable_max_depth" => true],
-        'denormalization_context' => ['groups' => ['refund:write'], "enable_max_depth" => true],
+        'normalization_context' => ['groups' => ['refund:read']],
+        'denormalization_context' => ['groups' => ['refund:write']],
     ],
 )]
 class Refund

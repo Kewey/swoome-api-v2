@@ -14,7 +14,6 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 #[ORM\Table(name: '`group`')]
 #[ApiResource(
     attributes: [
-        "force_eager" => false,
         'normalization_context' => ['groups' => ['group:read']],
         'denormalization_context' => ['groups' => ['group:write']],
     ],
@@ -32,11 +31,11 @@ class Group
     private $name;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'groups', cascade: ['persist'])]
-    #[Groups(["user:write", "group:write", "group:read"])]
+    #[Groups(["group:write", "group:read"])]
     private $members;
 
     #[ORM\OneToMany(mappedBy: 'expenseGroup', targetEntity: Expense::class)]
-    #[Groups(["expense:write", "group:write", "group:read"])]
+    #[Groups(["group:write", "group:read"])]
     #[ApiSubresource]
     private $expenses;
 

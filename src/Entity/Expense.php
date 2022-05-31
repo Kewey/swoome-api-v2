@@ -15,9 +15,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: ExpenseRepository::class)]
 #[ApiResource(
     attributes: [
-        "force_eager" => false,
-        'normalization_context' => ['groups' => ['expense:read'], "enable_max_depth" => true],
-        'denormalization_context' => ['groups' => ['expense:write'], "enable_max_depth" => true],
+        'normalization_context' => ['groups' => ['expense:read']],
+        'denormalization_context' => ['groups' => ['expense:write']],
     ],
 )]
 #[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'price'], arguments: ['orderParameterName' => 'order'])]
@@ -53,7 +52,7 @@ class Expense
     #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'expenses')]
     #[ApiSubresource]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["expense:write", "group:write"])]
+    #[Groups(["expense:write"])]
     private $expenseGroup;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'participatedExpenses')]
