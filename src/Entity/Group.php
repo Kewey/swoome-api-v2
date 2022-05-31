@@ -221,4 +221,14 @@ class Group
 
         return $this;
     }
+
+    #[Groups("group:read")] // <- MAGIC IS HERE, you can set a group on a method.
+    public function getSumExpenses(): int
+    {
+        $sumExpenses = 0;
+        foreach ($this->getExpenses() as $expense) {
+            $sumExpenses += $expense->getPrice();
+        }
+        return $sumExpenses;
+    }
 }
