@@ -2,17 +2,28 @@
 
 namespace App\Controller;
 
+use App\Factory\JsonResponseFactory;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class VerifyUserController extends AbstractController
 {
+    public function __construct(VerifyEmailHelperInterface $verifyEmailHelper, MailerInterface $mailer, JsonResponseFactory $jsonResponseFactory)
+    {
+        $this->verifyEmailHelper = $verifyEmailHelper;
+        $this->mailer = $mailer;
+        $this->jsonResponseFactory = $jsonResponseFactory;
+    }
+
     /**
      * @Route("/base", name="app_base")
      */
@@ -20,6 +31,7 @@ class VerifyUserController extends AbstractController
     {
         return $this->render('base.html.twig', []);
     }
+
     /**
      * @Route("/verify", name="app_verify_email")
      */
@@ -43,5 +55,42 @@ class VerifyUserController extends AbstractController
         $entityManager->flush();
         $this->addFlash('success', 'Compte vérifié! Vous pouvez maintenant vous connecter.');
         return $this->redirectToRoute('app_base');
+    }
+
+    /**
+     * @Route("/resend_url", methods={"POST"}, name="resend_url")
+     */
+    public function resendUrl(Request $request, UserRepository $userRepository)
+    {
+        $parameters = json_decode($request->getContent(), true);
+        $id = $parameters['id'];
+        //$email = $parameters['email'];
+        //$password = $parameters['password'];
+
+        if (!$id) {
+            throw new BadRequestHttpException('un "id" est requis');
+        }
+
+        $user = $userRepository->find($id);
+
+        if (!$user) {
+            throw $this->createNotFoundException();
+        }
+
+        $signatureComponents = $this->verifyEmailHelper->generateSignature(
+            'app_verify_email',
+            $user->getId(),
+            $user->getEmail(),
+            ['id' => $user->getId()]
+        );
+        $email = (new Email())
+            ->from('hello@swoome.com')
+            ->to($user->getEmail())
+            ->subject('Confirmez votre compte Swoome !')
+            ->html('<a href="' . $signatureComponents->getSignedUrl() . '">Cliquez ici !</a>');
+
+        $this->mailer->send($email);
+
+        return $this->jsonResponseFactory->create($user);
     }
 }
