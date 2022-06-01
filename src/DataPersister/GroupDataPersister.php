@@ -10,6 +10,7 @@ use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Balance;
 use Symfony\Component\Security\Core\Security;
 use Hashids\Hashids;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  *
@@ -43,6 +44,7 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
      */
     public function persist($data, array $context = []): void
     {
+        $currentUser = $this->security->getUser();
 
         if (
             ($context['collection_operation_name'] ?? null) === 'post' ||
@@ -53,7 +55,6 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
             if ($lastGroup) {
                 $lastGroupId = $lastGroup->getId();
             }
-            $currentUser = $this->security->getUser();
             $data->addMember($currentUser);
             $hashid = new Hashids("Groups", 6);
             $data->setCode(strtoupper($hashid->encode($lastGroupId + 1)));
@@ -95,6 +96,9 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
      */
     public function remove($data, array $context = [])
     {
+        $currentUser = $this->security->getUser();
+        if (!in_array($currentUser, $data->getMembers()))
+            throw new AccessDeniedHttpException('Vous n\'appartenez pas à ce groupe');
         $this->entityManager->remove($data);
         $this->entityManager->flush();
     }

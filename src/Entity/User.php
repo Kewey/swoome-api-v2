@@ -42,8 +42,14 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
             "read" => false
         ],
-        'put',
-        'delete',
+        'put' => [
+            "security" => "is_granted('ROLE_ADMIN') or object == user",
+            "security_message" => "Désolé, vous ne pouvez pas éditer un autre utilisateur.",
+        ],
+        'delete' => [
+            "security" => "is_granted('ROLE_ADMIN') or object == user",
+            "security_message" => "Désolé, vous ne pouvez pas supprimer un autre utilisateur.",
+        ],
     ]
 
 )]

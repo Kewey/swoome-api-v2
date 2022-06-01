@@ -83,9 +83,6 @@ class Group
         return $this;
     }
 
-    /**
-     * @return Collection|User[]
-     */
     public function getMembers()
     {
         return $this->members->getValues();
