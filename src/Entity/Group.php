@@ -86,9 +86,9 @@ class Group
     /**
      * @return Collection|User[]
      */
-    public function getMembers(): Collection
+    public function getMembers()
     {
-        return $this->members;
+        return $this->members->getValues();
     }
 
     public function addMember(User $member): self

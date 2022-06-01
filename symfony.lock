@@ -274,6 +274,9 @@
             "./.env"
         ]
     },
+    "symfony/form": {
+        "version": "v5.4.9"
+    },
     "symfony/framework-bundle": {
         "version": "5.4",
         "recipe": {
@@ -335,11 +338,17 @@
             "./config/packages/monolog.yaml"
         ]
     },
+    "symfony/options-resolver": {
+        "version": "v5.4.3"
+    },
     "symfony/password-hasher": {
         "version": "v5.4.3"
     },
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.24.0"
+    },
+    "symfony/polyfill-intl-icu": {
+        "version": "v1.25.0"
     },
     "symfony/polyfill-intl-idn": {
         "version": "v1.25.0"
@@ -361,6 +370,9 @@
     },
     "symfony/polyfill-php81": {
         "version": "v1.24.0"
+    },
+    "symfony/polyfill-uuid": {
+        "version": "v1.25.0"
     },
     "symfony/property-access": {
         "version": "v5.4.3"
@@ -441,6 +453,9 @@
             "./config/packages/twig.yaml",
             "./templates/base.html.twig"
         ]
+    },
+    "symfony/uid": {
+        "version": "v5.4.3"
     },
     "symfony/validator": {
         "version": "5.4",
