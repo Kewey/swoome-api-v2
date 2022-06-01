@@ -186,6 +186,7 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
     public function remove($data, array $context = [])
     {
         $this->entityManager->remove($data);
+        $this->calculateAllBalances($data);
         $this->entityManager->flush();
     }
 }
