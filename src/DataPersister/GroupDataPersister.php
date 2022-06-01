@@ -43,17 +43,21 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
      */
     public function persist($data, array $context = []): void
     {
-        $currentUser = $this->security->getUser();
-        $data->addMember($currentUser);
 
-        $lastGroupId = 0;
-        $lastGroup = $this->entityManager->getRepository(Group::class)->findOneBy(array(), array('id' => 'DESC'), 1, 0);
-        if ($lastGroup) {
-            $lastGroupId = $lastGroup->getId();
+        if (
+            ($context['collection_operation_name'] ?? null) === 'post' ||
+            ($context['graphql_operation_name'] ?? null) === 'create'
+        ) {
+            $lastGroupId = 0;
+            $lastGroup = $this->entityManager->getRepository(Group::class)->findOneBy(array(), array('id' => 'DESC'), 1, 0);
+            if ($lastGroup) {
+                $lastGroupId = $lastGroup->getId();
+            }
+            $currentUser = $this->security->getUser();
+            $data->addMember($currentUser);
+            $hashid = new Hashids("Groups", 6);
+            $data->setCode(strtoupper($hashid->encode($lastGroupId + 1)));
         }
-
-        $hashid = new Hashids("Groups", 6);
-        $data->setCode(strtoupper($hashid->encode($lastGroupId + 1)));
 
         $userRepository = $this->entityManager->getRepository(User::class);
         foreach ($data->getMembers() as $user) {
@@ -63,7 +67,12 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
             if ($u !== null) {
                 $data->removeMember($user);
                 $data->addMember($u);
-                $data->addBalance($this->createEmptyBalance($u));
+                if (
+                    ($context['collection_operation_name'] ?? null) === 'post' ||
+                    ($context['graphql_operation_name'] ?? null) === 'create'
+                ) {
+                    $data->addBalance($this->createEmptyBalance($u));
+                }
             } else {
                 $this->entityManager->persist($user);
             }
@@ -80,6 +89,7 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
         $balance->setBalanceUser($user);
         return $balance;
     }
+
     /**
      * {@inheritdoc}
      */
