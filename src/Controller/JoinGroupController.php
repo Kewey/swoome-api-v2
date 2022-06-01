@@ -43,8 +43,14 @@ class JoinGroupController extends AbstractController
             throw new BadRequestHttpException('ce "code" n\'existe pas');
         }
 
+
         /** @var User $user */
         $user = $this->getUser();
+
+        if (in_array($user, $group->getMembers())) {
+            throw new BadRequestHttpException('Vous appartenez déjà à ce groupe');
+        }
+
         $user->addGroup($group);
 
         $balance = new Balance;
