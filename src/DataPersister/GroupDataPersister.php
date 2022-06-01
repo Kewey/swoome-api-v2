@@ -8,6 +8,7 @@ use App\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Balance;
+use App\Repository\BalanceRepository;
 use Symfony\Component\Security\Core\Security;
 use Hashids\Hashids;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -26,9 +27,11 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
     public function __construct(
         EntityManagerInterface $entityManager,
         Security $security,
+        BalanceRepository $balanceRepository
     ) {
         $this->entityManager = $entityManager;
         $this->security = $security;
+        $this->balanceRepository = $balanceRepository;
     }
 
     /**
@@ -73,6 +76,14 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
                     ($context['graphql_operation_name'] ?? null) === 'create'
                 ) {
                     $data->addBalance($this->createEmptyBalance($u));
+                }
+                if (
+                    ($context['item_operation_name'] ?? null) === 'put' ||
+                    ($context['graphql_operation_name'] ?? null) === 'edit'
+                ) {
+                    if (!$this->balanceRepository->findBalanceByUserByGroup($u, $data)) {
+                        $data->addBalance($this->createEmptyBalance($u));
+                    }
                 }
             } else {
                 $this->entityManager->persist($user);
