@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Factory\JsonResponseFactory;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
@@ -83,11 +85,15 @@ class VerifyUserController extends AbstractController
             $user->getEmail(),
             ['id' => $user->getId()]
         );
-        $email = (new Email())
-            ->from('no_reply@swoome.fr')
+
+        $email = (new TemplatedEmail())
+            ->from(new Address('no_reply@swoome.fr', 'Team Swoome'))
             ->to($user->getEmail())
-            ->subject('Confirmez votre compte Swoome !')
-            ->html('<a href="' . $signatureComponents->getSignedUrl() . '">Cliquez ici !</a>');
+            ->subject('Bienvenue chez Swoome ' . $user->getUsername() . ', confirme ton mail !')
+            ->htmlTemplate('emails/confirm.html.twig')
+            ->context([
+                'url' => $signatureComponents->getSignedUrl(),
+            ]);
 
         $this->mailer->send($email);
 

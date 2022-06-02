@@ -4,7 +4,9 @@ namespace App\EventListener;
 
 use App\Entity\User;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
@@ -35,11 +37,14 @@ class UserListener
             $entity->getEmail(),
             ['id' => $entity->getId()]
         );
-        $email = (new Email())
-            ->from('no_reply@swoome.fr')
+        $email = (new TemplatedEmail())
+            ->from(new Address('no_reply@swoome.fr', 'Team Swoome'))
             ->to($entity->getEmail())
-            ->subject('Confirmez votre compte Swoome !')
-            ->html('<a href="' . $signatureComponents->getSignedUrl() . '">Cliquez ici !</a>');
+            ->subject('Bienvenue chez Swoome ' . $entity->getUsername() . ', confirme ton mail !')
+            ->htmlTemplate('emails/confirm.html.twig')
+            ->context([
+                'url' => $signatureComponents->getSignedUrl(),
+            ]);
 
         $this->mailer->send($email);
     }
