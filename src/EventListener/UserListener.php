@@ -37,6 +37,7 @@ class UserListener
             $entity->getEmail(),
             ['id' => $entity->getId()]
         );
+
         $email = (new TemplatedEmail())
             ->from(new Address('no_reply@swoome.fr', 'Team Swoome'))
             ->to($entity->getEmail())
