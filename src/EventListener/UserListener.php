@@ -40,7 +40,7 @@ class UserListener
             ->to($entity->getEmail())
             ->subject('Confirmez votre compte Swoome !')
             ->html('<a href="' . $signatureComponents->getSignedUrl() . '">Cliquez ici !</a>');
-        dd($email);
+
         $this->mailer->send($email);
     }
 }
