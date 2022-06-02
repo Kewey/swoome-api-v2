@@ -40,7 +40,7 @@ class Group
     private $expenses;
 
     #[ORM\ManyToOne(targetEntity: GroupType::class, inversedBy: 'groups')]
-    #[Groups(["group:read", "group:write", "group_type:read"])]
+    #[Groups(["group:read", "group:write", "group_type:read", "user:read"])]
     #[ORM\JoinColumn(nullable: false)]
     private $type;
 
@@ -69,6 +69,11 @@ class Group
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 
     public function getName(): ?string

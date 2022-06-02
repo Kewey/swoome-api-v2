@@ -34,7 +34,7 @@ class DashboardController extends AbstractDashboardController
         // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
         // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
         //
-        return $this->render('@EasyAdmin/page/content.html.twig');
+        return $this->render('/dashboard/index.html.twig');
     }
 
     public function configureDashboard(): Dashboard
@@ -48,10 +48,10 @@ class DashboardController extends AbstractDashboardController
 
         return [
             MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
-            MenuItem::linkToCrud('Catégories Groupes', 'fa fa-user', GroupType::class),
-            MenuItem::linkToCrud('Catégories Dépenses', 'fa fa-user', ExpenseType::class),
-            MenuItem::linkToCrud('Dépenses', 'fa fa-user', Expense::class),
-            MenuItem::linkToCrud('Groupes', 'fa fa-user', Group::class),
+            MenuItem::linkToCrud('Catégories Groupes', 'fa-solid fa-people-roof', GroupType::class),
+            MenuItem::linkToCrud('Catégories Dépenses', 'fa-solid fa-tag', ExpenseType::class),
+            MenuItem::linkToCrud('Dépenses', 'fas fa-money-bill-transfer', Expense::class),
+            MenuItem::linkToCrud('Groupes', 'fas fa-user-group', Group::class),
             MenuItem::linkToCrud('Users', 'fa fa-user', User::class),
         ];
     }

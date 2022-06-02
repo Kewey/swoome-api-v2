@@ -71,20 +71,6 @@ class GroupDataPersister implements ContextAwareDataPersisterInterface
             if ($u !== null) {
                 $data->removeMember($user);
                 $data->addMember($u);
-                if (
-                    ($context['collection_operation_name'] ?? null) === 'post' ||
-                    ($context['graphql_operation_name'] ?? null) === 'create'
-                ) {
-                    $data->addBalance($this->createEmptyBalance($u));
-                }
-                if (
-                    ($context['item_operation_name'] ?? null) === 'put' ||
-                    ($context['graphql_operation_name'] ?? null) === 'edit'
-                ) {
-                    if (!$this->balanceRepository->findBalanceByUserByGroup($u, $data)) {
-                        $data->addBalance($this->createEmptyBalance($u));
-                    }
-                }
             } else {
                 $this->entityManager->persist($user);
             }

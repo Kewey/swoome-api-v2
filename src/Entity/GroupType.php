@@ -23,11 +23,11 @@ class GroupType
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(["group_type:read", "group_type:write", "group:read"])]
+    #[Groups(["group_type:read", "group_type:write", "group:read", "user:read"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[Groups(["group_type:read", "group_type:write", "group:read"])]
+    #[Groups(["group_type:read", "group_type:write", "group:read", "user:read"])]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $emoji;
 
@@ -38,6 +38,11 @@ class GroupType
     public function __construct()
     {
         $this->groups = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return $this->name;
     }
 
     public function getId(): ?int
