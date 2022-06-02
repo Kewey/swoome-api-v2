@@ -13,7 +13,7 @@ class DefaultController extends AbstractController
     public function ping()
     {
         return $this->json([
-            'message' => 'Bienvenue sur l\'api de Swoome'
+            'message' => 'Bienvenue sur l\'api de Swoome !'
         ]);
     }
 }
