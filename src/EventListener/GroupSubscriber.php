@@ -34,15 +34,15 @@ class GroupSubscriber implements EventSubscriberInterface
     // to both the entity object of the event and the entity manager itself
     public function postPersist(LifecycleEventArgs $args): void
     {
-        $this->logActivity('persist', $args);
+        $this->addBalancesToGroup('persist', $args);
     }
 
     public function postUpdate(LifecycleEventArgs $args): void
     {
-        $this->logActivity('update', $args);
+        $this->addBalancesToGroup('update', $args);
     }
 
-    private function logActivity(string $action, LifecycleEventArgs $args): void
+    private function addBalancesToGroup(string $action, LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
 
