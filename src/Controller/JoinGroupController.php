@@ -53,12 +53,10 @@ class JoinGroupController extends AbstractController
 
         $user->addGroup($group);
 
-        if (!$this->balanceRepository->findBalanceByUserByGroup($user, $group)) {
-            $balance = new Balance;
-            $balance->setValue(0);
-            $balance->setBalanceGroup($group);
-            $user->addBalance($balance);
-        }
+        $balance = new Balance;
+        $balance->setValue(0);
+        $balance->setBalanceGroup($group);
+        $user->addBalance($balance);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
