@@ -36,11 +36,11 @@ class UserListener
             ['id' => $entity->getId()]
         );
         $email = (new Email())
-            ->from('no_reply@swoome.com')
+            ->from('no_reply@swoome.fr')
             ->to($entity->getEmail())
             ->subject('Confirmez votre compte Swoome !')
             ->html('<a href="' . $signatureComponents->getSignedUrl() . '">Cliquez ici !</a>');
-
+        dd($email);
         $this->mailer->send($email);
     }
 }

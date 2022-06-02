@@ -84,7 +84,7 @@ class VerifyUserController extends AbstractController
             ['id' => $user->getId()]
         );
         $email = (new Email())
-            ->from('no_reply@swoome.com')
+            ->from('no_reply@swoome.fr')
             ->to($user->getEmail())
             ->subject('Confirmez votre compte Swoome !')
             ->html('<a href="' . $signatureComponents->getSignedUrl() . '">Cliquez ici !</a>');
