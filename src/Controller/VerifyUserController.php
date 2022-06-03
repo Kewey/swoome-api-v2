@@ -60,9 +60,9 @@ class VerifyUserController extends AbstractController
     }
 
     /**
-     * @Route("/api/auth/resend_url", methods={"POST"}, name="resend_url")
+     * @Route("/api/auth/resend_mail", methods={"POST"}, name="resend_mail")
      */
-    public function resendUrl(Request $request, UserRepository $userRepository)
+    public function resendMail(Request $request, UserRepository $userRepository)
     {
         $parameters = json_decode($request->getContent(), true);
         $email = $parameters['email'];
