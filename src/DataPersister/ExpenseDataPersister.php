@@ -112,7 +112,7 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
     public function calculateBalances($data)
     {
         $balances = [];
-        foreach ($data->getParticipants() as $user) {
+        foreach ($data->getExpenseGroup()->getMembers() as $user) {
             $this->entityManager->persist($user);
             if ($user == $data->getMadeBy()) {
                 $balanceValue = $data->getPrice() - ($data->getPrice() / $data->getParticipants()->count());
