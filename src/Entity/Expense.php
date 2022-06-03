@@ -61,7 +61,7 @@ class Expense
     #[Groups(["expense:read", "expense:write", "user:read"])]
     private $participants;
 
-    #[ORM\Column(type: 'datetime_immutable')]
+    #[ORM\Column(type: 'datetime')]
     #[Groups(["expense:read", "expense:write"])]
     private $expenseAt;
 
@@ -181,12 +181,12 @@ class Expense
         return $this;
     }
 
-    public function getExpenseAt(): ?\DateTimeImmutable
+    public function getExpenseAt(): ?\DateTimeInterface
     {
         return $this->expenseAt;
     }
 
-    public function setExpenseAt(\DateTimeImmutable $expenseAt): self
+    public function setExpenseAt(\DateTimeInterface $expenseAt): self
     {
         $this->expenseAt = $expenseAt;
 

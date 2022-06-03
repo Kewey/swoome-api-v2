@@ -10,6 +10,7 @@ use App\Entity\Expense;
 use App\Entity\Refund;
 use App\Repository\BalanceRepository;
 use App\Repository\ExpenseRepository;
+use DateTime;
 use DateTimeImmutable;
 use Symfony\Component\Security\Core\Security;
 
@@ -56,7 +57,7 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
         }
 
         if (!$data->getExpenseAt()) {
-            $data->setExpenseAt(new DateTimeImmutable());
+            $data->setExpenseAt(new DateTime());
         }
 
         $this->removeRefunds($data);
