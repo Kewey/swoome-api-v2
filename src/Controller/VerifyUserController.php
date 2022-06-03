@@ -60,20 +60,20 @@ class VerifyUserController extends AbstractController
     }
 
     /**
-     * @Route("/resend_url", methods={"POST"}, name="resend_url")
+     * @Route("/api/auth/resend_url", methods={"POST"}, name="resend_url")
      */
     public function resendUrl(Request $request, UserRepository $userRepository)
     {
         $parameters = json_decode($request->getContent(), true);
-        $id = $parameters['id'];
+        $email = $parameters['email'];
         //$email = $parameters['email'];
         //$password = $parameters['password'];
 
-        if (!$id) {
-            throw new BadRequestHttpException('un "id" est requis');
+        if (!$email) {
+            throw new BadRequestHttpException('un "email" est requis');
         }
 
-        $user = $userRepository->find($id);
+        $user = $userRepository->findOneByEmail($email);
 
         if (!$user) {
             throw $this->createNotFoundException();
