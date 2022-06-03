@@ -58,12 +58,17 @@ class Group
     #[Groups(["balance:write", "group:write", "group:read"])]
     private $balances;
 
+    #[ORM\ManyToMany(targetEntity: ExpenseType::class, mappedBy: 'groups')]
+    #[Groups(["group:read", "group:write", "expense_type:read"])]
+    private $expenseTypes;
+
     public function __construct()
     {
         $this->members = new ArrayCollection();
         $this->expenses = new ArrayCollection();
         $this->refunds = new ArrayCollection();
         $this->balances = new ArrayCollection();
+        $this->expenseTypes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -231,5 +236,32 @@ class Group
             $sumExpenses += $expense->getPrice();
         }
         return $sumExpenses;
+    }
+
+    /**
+     * @return Collection<int, ExpenseType>
+     */
+    public function getExpenseTypes(): Collection
+    {
+        return $this->expenseTypes;
+    }
+
+    public function addExpenseType(ExpenseType $expenseType): self
+    {
+        if (!$this->expenseTypes->contains($expenseType)) {
+            $this->expenseTypes[] = $expenseType;
+            $expenseType->addGroup($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpenseType(ExpenseType $expenseType): self
+    {
+        if ($this->expenseTypes->removeElement($expenseType)) {
+            $expenseType->removeGroup($this);
+        }
+
+        return $this;
     }
 }

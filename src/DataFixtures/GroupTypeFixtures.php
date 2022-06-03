@@ -5,42 +5,56 @@ namespace App\DataFixtures;
 use App\Entity\GroupType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class GroupTypeFixtures extends Fixture
 {
+    public const COLOC_GROUPTYPE_REFERENCE = 'coloc-grouptype';
+    public const COUPLE_GROUPTYPE_REFERENCE = 'couple-grouptype';
+    public const VOYAGE_GROUPTYPE_REFERENCE = 'voyage-grouptype';
+    public const EVENT_GROUPTYPE_REFERENCE = 'event-grouptype';
+    public const PROJECT_GROUPTYPE_REFERENCE = 'project-grouptype';
+    public const OTHER_GROUPTYPE_REFERENCE = 'other-grouptype';
+
     public function load(ObjectManager $manager): void
     {
-        $type1 = new GroupType();
-        $type1->setName('Colocation');
-        $type1->setEmoji('🏠');
-        $manager->persist($type1);
+        $coloc = new GroupType();
+        $coloc->setName('Colocation');
+        $coloc->setEmoji('🏠');
+        $manager->persist($coloc);
 
-        $type2 = new GroupType();
-        $type2->setName('Vie en couple');
-        $type2->setEmoji('👩‍❤️‍👨');
-        $manager->persist($type2);
+        $couple = new GroupType();
+        $couple->setName('Vie en couple');
+        $couple->setEmoji('👩‍❤️‍👨');
+        $manager->persist($couple);
 
-        $type3 = new GroupType();
-        $type3->setName('Voyage');
-        $type3->setEmoji('✈');
-        $manager->persist($type3);
+        $voyage = new GroupType();
+        $voyage->setName('Voyage');
+        $voyage->setEmoji('✈');
+        $manager->persist($voyage);
 
-        $type4 = new GroupType();
-        $type4->setName('Evenement');
-        $type4->setEmoji('🎉');
-        $manager->persist($type4);
+        $event = new GroupType();
+        $event->setName('Evenement');
+        $event->setEmoji('🎉');
+        $manager->persist($event);
 
+        $project = new GroupType();
+        $project->setName('Projet');
+        $project->setEmoji('💻');
+        $manager->persist($project);
 
-        $type5 = new GroupType();
-        $type5->setName('Projet');
-        $type5->setEmoji('💻');
-        $manager->persist($type5);
-
-        $type6 = new GroupType();
-        $type6->setName('Autre');
-        $type6->setEmoji('🏷');
-        $manager->persist($type6);
+        $other = new GroupType();
+        $other->setName('Autre');
+        $other->setEmoji('🏷');
+        $manager->persist($other);
 
         $manager->flush();
+
+        $this->addReference(self::COLOC_GROUPTYPE_REFERENCE, $coloc);
+        $this->addReference(self::COUPLE_GROUPTYPE_REFERENCE, $couple);
+        $this->addReference(self::VOYAGE_GROUPTYPE_REFERENCE, $voyage);
+        $this->addReference(self::EVENT_GROUPTYPE_REFERENCE, $event);
+        $this->addReference(self::PROJECT_GROUPTYPE_REFERENCE, $project);
+        $this->addReference(self::OTHER_GROUPTYPE_REFERENCE, $other);
     }
 }

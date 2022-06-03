@@ -19,15 +19,15 @@ class ExpenseType
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[Groups(["expense_type:read"])]
+    #[Groups(["expense_type:read", "group:read"])]
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[Groups(["expense_type:read", "expense_type:write", "expense:read"])]
+    #[Groups(["expense_type:read", "expense_type:write", "expense:read", "group:read"])]
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
 
-    #[Groups(["expense_type:read", "expense_type:write", "expense:read"])]
+    #[Groups(["expense_type:read", "expense_type:write", "expense:read", "group:read"])]
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $emoji;
 
@@ -35,9 +35,21 @@ class ExpenseType
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Expense::class)]
     private $expense;
 
+    #[Groups(["expense_type:read", "expense_type:write", "expense:read", "group:read"])]
+    #[ORM\Column(type: 'boolean')]
+    private $isDefault = false;
+
+    #[ORM\ManyToMany(targetEntity: GroupType::class, inversedBy: 'expenseTypes')]
+    private $groupTypes;
+
+    #[ORM\ManyToMany(targetEntity: Group::class, inversedBy: 'expenseTypes')]
+    private $groups;
+
     public function __construct()
     {
         $this->expense = new ArrayCollection();
+        $this->groupTypes = new ArrayCollection();
+        $this->groups = new ArrayCollection();
     }
 
     public function __toString()
@@ -100,6 +112,66 @@ class ExpenseType
                 $expense->setType(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isIsDefault(): ?bool
+    {
+        return $this->isDefault;
+    }
+
+    public function setIsDefault(bool $isDefault): self
+    {
+        $this->isDefault = $isDefault;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, GroupType>
+     */
+    public function getGroupTypes(): Collection
+    {
+        return $this->groupTypes;
+    }
+
+    public function addGroupType(GroupType $groupType): self
+    {
+        if (!$this->groupTypes->contains($groupType)) {
+            $this->groupTypes[] = $groupType;
+        }
+
+        return $this;
+    }
+
+    public function removeGroupType(GroupType $groupType): self
+    {
+        $this->groupTypes->removeElement($groupType);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Group>
+     */
+    public function getGroups(): Collection
+    {
+        return $this->groups;
+    }
+
+    public function addGroup(Group $group): self
+    {
+        if (!$this->groups->contains($group)) {
+            $this->groups[] = $group;
+        }
+
+        return $this;
+    }
+
+    public function removeGroup(Group $group): self
+    {
+        $this->groups->removeElement($group);
 
         return $this;
     }

@@ -39,28 +39,39 @@ class ExpenseTypeRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return ExpenseType[] Returns an array of ExpenseType objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findExpenseTypeByGroupType($grouptype)
+    {
+        return $this->createQueryBuilder('e')
+            ->where('e.isDefault = :isDefault')
+            ->andWhere(':grouptype MEMBER OF e.groupTypes')
+            ->setParameter('grouptype', $grouptype)
+            ->setParameter('isDefault', true)
+            ->getQuery()
+            ->getResult();
+    }
 
-//    public function findOneBySomeField($value): ?ExpenseType
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    //    /**
+    //     * @return ExpenseType[] Returns an array of ExpenseType objects
+    //     */
+    //    public function findByExampleField($value): array
+    //    {
+    //        return $this->createQueryBuilder('e')
+    //            ->andWhere('e.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->orderBy('e.id', 'ASC')
+    //            ->setMaxResults(10)
+    //            ->getQuery()
+    //            ->getResult()
+    //        ;
+    //    }
+
+    //    public function findOneBySomeField($value): ?ExpenseType
+    //    {
+    //        return $this->createQueryBuilder('e')
+    //            ->andWhere('e.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
 }

@@ -5,6 +5,7 @@ namespace App\EventListener;
 use App\Entity\Balance;
 use App\Entity\Group;
 use App\Repository\BalanceRepository;
+use App\Repository\ExpenseTypeRepository;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Events;
@@ -13,10 +14,11 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 class GroupSubscriber implements EventSubscriberInterface
 {
 
-    public function __construct(EntityManagerInterface $entityManager, BalanceRepository $balanceRepository)
+    public function __construct(EntityManagerInterface $entityManager, BalanceRepository $balanceRepository, ExpenseTypeRepository $expenseTypeRepository)
     {
         $this->entityManager = $entityManager;
         $this->balanceRepository = $balanceRepository;
+        $this->expenseTypeRepository = $expenseTypeRepository;
     }
 
     // this method can only return the event names; you cannot define a
@@ -35,6 +37,7 @@ class GroupSubscriber implements EventSubscriberInterface
     public function postPersist(LifecycleEventArgs $args): void
     {
         $this->addBalancesToGroup('persist', $args);
+        $this->addExpenseTypesToGroup('persist', $args);
     }
 
     public function postUpdate(LifecycleEventArgs $args): void
@@ -42,10 +45,24 @@ class GroupSubscriber implements EventSubscriberInterface
         $this->addBalancesToGroup('update', $args);
     }
 
-    private function addBalancesToGroup(string $action, LifecycleEventArgs $args): void
+    private function addExpenseTypesToGroup(string $action, LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
 
+        if (!$entity instanceof Group) {
+            return;
+        }
+
+        $espenseTypes = $this->expenseTypeRepository->findExpenseTypeByGroupType($entity->getType());
+        foreach ($espenseTypes as $expenseType) {
+            $entity->addExpenseType($expenseType);
+        }
+        $this->entityManager->flush();
+    }
+
+    private function addBalancesToGroup(string $action, LifecycleEventArgs $args): void
+    {
+        $entity = $args->getObject();
 
         if (!$entity instanceof Group) {
             return;

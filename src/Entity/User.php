@@ -66,6 +66,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $email;
 
     #[ORM\Column(type: 'json')]
+    #[Groups(["user:read", "user:write"])]
     private $roles = [];
 
     #[ORM\Column(type: 'string')]

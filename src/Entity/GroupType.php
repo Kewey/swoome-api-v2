@@ -35,9 +35,14 @@ class GroupType
     #[ORM\OneToMany(mappedBy: 'type', targetEntity: Group::class)]
     private $groups;
 
+    #[ORM\ManyToMany(targetEntity: ExpenseType::class, mappedBy: 'groupTypes')]
+    #[Groups(["group_type:read", "group_type:write"])]
+    private $expenseTypes;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
+        $this->expenseTypes = new ArrayCollection();
     }
 
     public function __toString()
@@ -99,6 +104,33 @@ class GroupType
             if ($group->getType() === $this) {
                 $group->setType(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ExpenseType>
+     */
+    public function getExpenseTypes(): Collection
+    {
+        return $this->expenseTypes;
+    }
+
+    public function addExpenseType(ExpenseType $expenseType): self
+    {
+        if (!$this->expenseTypes->contains($expenseType)) {
+            $this->expenseTypes[] = $expenseType;
+            $expenseType->addGroupType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExpenseType(ExpenseType $expenseType): self
+    {
+        if ($this->expenseTypes->removeElement($expenseType)) {
+            $expenseType->removeGroupType($this);
         }
 
         return $this;
