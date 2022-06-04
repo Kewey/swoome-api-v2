@@ -147,7 +147,11 @@ class ExpenseSubscriber implements EventSubscriberInterface
         $balances = [];
         foreach ($entity->getExpenseGroup()->getMembers() as $user) {
             if ($user == $entity->getMadeBy()) {
-                $balanceValue = $entity->getPrice() - ($entity->getPrice() / $entity->getParticipants()->count());
+                if ($entity->getParticipants()->count() == 1 && !$entity->getParticipants()->contains($user)) {
+                    $balanceValue = $entity->getPrice();
+                } else {
+                    $balanceValue = $entity->getPrice() - ($entity->getPrice() / $entity->getParticipants()->count());
+                }
             } elseif ($entity->getParticipants()->contains($user)) {
                 $balanceValue = - ($entity->getPrice() / $entity->getParticipants()->count());
             } else {
