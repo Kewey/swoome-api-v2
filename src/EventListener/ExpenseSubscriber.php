@@ -61,21 +61,18 @@ class ExpenseSubscriber implements EventSubscriberInterface
     {
         $this->removeRefunds('persist', $args);
         $this->calculateBalances('persist', $args);
-        $this->entityManager->flush();
     }
 
     public function postUpdate(LifecycleEventArgs $args): void
     {
         $this->removeRefunds('update', $args);
         $this->calculateAllBalances('update', $args);
-        $this->entityManager->flush();
     }
 
     public function postRemove(LifecycleEventArgs $args): void
     {
         $this->removeRefunds('delete', $args);
         $this->calculateAllBalances('delete', $args);
-        $this->entityManager->flush();
     }
 
     private function addDatasToExpense(string $action, LifecycleEventArgs $args): void
@@ -136,6 +133,7 @@ class ExpenseSubscriber implements EventSubscriberInterface
             $balances[] = clone $lastBalance;
         }
         $this->calculateRefunds($balances);
+        $this->entityManager->flush();
     }
 
     public function calculateBalances(string $action, LifecycleEventArgs $args)
@@ -148,28 +146,27 @@ class ExpenseSubscriber implements EventSubscriberInterface
 
         $balances = [];
         foreach ($entity->getExpenseGroup()->getMembers() as $user) {
-            $this->entityManager->persist($user);
             if ($user == $entity->getMadeBy()) {
                 $balanceValue = $entity->getPrice() - ($entity->getPrice() / $entity->getParticipants()->count());
             } else {
                 $balanceValue = - ($entity->getPrice() / $entity->getParticipants()->count());
             }
 
-            $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $entity->getExpenseGroup());
-            if (!$lastBalance) {
+            $balance = $this->balanceRepository->findBalanceByUserByGroup($user, $entity->getExpenseGroup());
+            if (!$balance) {
                 $balance = new Balance;
                 $balance->setBalanceUser($user);
                 $balance->setBalanceGroup($entity->getExpenseGroup());
                 $balance->setValue($balanceValue);
-                $this->entityManager->persist($balance);
-                $balances[] = clone $balance;
             } else {
-                $lastBalance->setValue($lastBalance->getValue() + $balanceValue);
-                $this->entityManager->persist($lastBalance);
-                $balances[] = clone $lastBalance;
+                $balance->setValue($balance->getValue() + $balanceValue);
             }
+
+            $this->entityManager->persist($balance);
+            $balances[] = clone $balance;
         }
         $this->calculateRefunds($balances);
+        $this->entityManager->flush();
     }
 
 
