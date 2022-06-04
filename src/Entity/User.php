@@ -77,7 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\NotBlank(["groups" => ["create"]])]
     private $plainPassword;
 
-    #[Groups(["user:read", "user:write", "group:read", "expense:read"])]
+    #[Groups(["user:read", "user:write", "group:read", "expense:read", 'balance:read'])]
     #[ORM\Column(type: 'string', length: 255)]
     private $username;
 
