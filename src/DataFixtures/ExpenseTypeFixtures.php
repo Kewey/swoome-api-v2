@@ -70,6 +70,19 @@ class ExpenseTypeFixtures extends Fixture  implements DependentFixtureInterface
         $type6->addGroupType($this->getReference(GroupTypeFixtures::OTHER_GROUPTYPE_REFERENCE));
         $manager->persist($type6);
 
+
+        $type7 = new ExpenseType();
+        $type7->setName('Remboursement');
+        $type7->setEmoji('💸');
+        $type7->setIsDefault(true);
+        $type7->addGroupType($this->getReference(GroupTypeFixtures::COLOC_GROUPTYPE_REFERENCE));
+        $type7->addGroupType($this->getReference(GroupTypeFixtures::COUPLE_GROUPTYPE_REFERENCE));
+        $type7->addGroupType($this->getReference(GroupTypeFixtures::VOYAGE_GROUPTYPE_REFERENCE));
+        $type7->addGroupType($this->getReference(GroupTypeFixtures::EVENT_GROUPTYPE_REFERENCE));
+        $type7->addGroupType($this->getReference(GroupTypeFixtures::PROJECT_GROUPTYPE_REFERENCE));
+        $type7->addGroupType($this->getReference(GroupTypeFixtures::OTHER_GROUPTYPE_REFERENCE));
+        $manager->persist($type7);
+
         $type1 = new ExpenseType();
         $type1->setName('Autres');
         $type1->setEmoji('🏷');
