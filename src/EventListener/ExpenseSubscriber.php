@@ -168,13 +168,17 @@ class ExpenseSubscriber implements EventSubscriberInterface
                 $balance->setValue($balance->getValue() + $balanceValue);
             }
 
+            /*TODO Recruter mathématicien*/
+            if ($balance->getValue() < 3) {
+                $balance->setValue(0);
+            }
+
             $this->entityManager->persist($balance);
             $balances[] = clone $balance;
         }
         $this->calculateRefunds($balances);
         $this->entityManager->flush();
     }
-
 
     public function calculateRefunds($balances)
     {
