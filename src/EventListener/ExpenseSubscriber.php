@@ -1,24 +1,23 @@
 <?php
-// src/DataPersister/ExpenseDataPersister.php
 
-namespace App\DataPersister;
+namespace App\EventListener;
 
-use Doctrine\ORM\EntityManagerInterface;
-use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\Balance;
 use App\Entity\Expense;
+use App\Entity\Group;
 use App\Entity\Refund;
 use App\Repository\BalanceRepository;
 use App\Repository\ExpenseRepository;
 use DateTime;
-use DateTimeImmutable;
+use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Events;
+use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Component\Security\Core\Security;
 
-/**
- *
- */
-class ExpenseDataPersister implements ContextAwareDataPersisterInterface
+class ExpenseSubscriber implements EventSubscriberInterface
 {
+
     /**
      * @var EntityManagerInterface
      */
@@ -37,71 +36,101 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
         $this->expenseRepository = $expenseRepository;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function supports($data, array $context = []): bool
+    // this method can only return the event names; you cannot define a
+    // custom method name to execute when each event triggers
+    public function getSubscribedEvents(): array
     {
-        return $data instanceof Expense;
+        return [
+            Events::prePersist,
+            Events::postPersist,
+            Events::postUpdate,
+            Events::postRemove
+        ];
     }
 
-    /**
-     * @param Expense $data
-     */
-    public function persist($data, array $context = []): void
+    // callback methods must be called exactly like the events they listen to;
+    // they receive an argument of type LifecycleEventArgs, which gives you access
+    // to both the entity object of the event and the entity manager itself
+    public function prePersist(LifecycleEventArgs $args): void
     {
+        $this->addDatasToExpense('prePersist', $args);
+        $this->entityManager->flush();
+    }
+
+    public function postPersist(LifecycleEventArgs $args): void
+    {
+        $this->removeRefunds('persist', $args);
+        $this->calculateBalances('persist', $args);
+        $this->entityManager->flush();
+    }
+
+    public function postUpdate(LifecycleEventArgs $args): void
+    {
+        $this->removeRefunds('update', $args);
+        $this->calculateAllBalances('update', $args);
+        $this->entityManager->flush();
+    }
+
+    public function postRemove(LifecycleEventArgs $args): void
+    {
+        $this->removeRefunds('delete', $args);
+        $this->calculateAllBalances('delete', $args);
+        $this->entityManager->flush();
+    }
+
+    private function addDatasToExpense(string $action, LifecycleEventArgs $args): void
+    {
+        $entity = $args->getObject();
+
+        if (!$entity instanceof Expense) {
+            return;
+        }
         $currentUser = $this->security->getUser();
 
-        if (!$data->getMadeBy()) {
-            $data->setMadeBy($currentUser);
+        if (!$entity->getMadeBy()) {
+            $entity->setMadeBy($currentUser);
         }
 
-        if (!$data->getExpenseAt()) {
-            $data->setExpenseAt(new DateTime());
-        }
-
-        $this->removeRefunds($data);
-        if (
-            ($context['collection_operation_name'] ?? null) === 'post' ||
-            ($context['graphql_operation_name'] ?? null) === 'create'
-        ) {
-            $this->calculateBalances($data);
-        }
-
-        $this->entityManager->persist($data);
-
-        if (
-            ($context['item_operation_name'] ?? null) === 'put' ||
-            ($context['graphql_operation_name'] ?? null) === 'edit'
-        ) {
-            $this->calculateAllBalances($data);
+        if (!$entity->getExpenseAt()) {
+            $entity->setExpenseAt(new DateTime());
         }
 
         $this->entityManager->flush();
     }
 
-    public function removeRefunds($data)
+    public function removeRefunds(string $action, LifecycleEventArgs $args)
     {
-        $oldRefunds = $data->getExpenseGroup()->getRefunds();
+        $entity = $args->getObject();
+
+        if (!$entity instanceof Expense) {
+            return;
+        }
+
+        $oldRefunds = $entity->getExpenseGroup()->getRefunds();
         foreach ($oldRefunds as $oldRefund) {
             $this->entityManager->remove($oldRefund);
         }
     }
 
-
-    public function calculateAllBalances($data)
+    public function calculateAllBalances(string $action, LifecycleEventArgs $args)
     {
+        $entity = $args->getObject();
+
+        if (!$entity instanceof Expense) {
+            return;
+        }
+
         $balances = [];
-        foreach ($data->getExpenseGroup()->getMembers() as $user) {
+        foreach ($entity->getExpenseGroup()->getMembers() as $user) {
             $balanceValue = 0;
-            foreach ($this->expenseRepository->findExpenseByUserAndGroup($user, $data->getExpenseGroup()) as $expense) {
+            foreach ($this->expenseRepository->findExpenseByUserAndGroup($user, $entity->getExpenseGroup()) as $expense) {
                 if ($user == $expense->getMadeBy()) {
                     $balanceValue += $expense->getPrice() - ($expense->getPrice() / $expense->getParticipants()->count());
                 } else {
                     $balanceValue += - ($expense->getPrice() / $expense->getParticipants()->count());
                 }
             }
-            $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $data->getExpenseGroup());
+            $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $entity->getExpenseGroup());
             $lastBalance->setValue($balanceValue);
             $this->entityManager->persist($lastBalance);
             $balances[] = clone $lastBalance;
@@ -109,22 +138,28 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
         $this->calculateRefunds($balances);
     }
 
-    public function calculateBalances($data)
+    public function calculateBalances(string $action, LifecycleEventArgs $args)
     {
+        $entity = $args->getObject();
+
+        if (!$entity instanceof Expense) {
+            return;
+        }
+
         $balances = [];
-        foreach ($data->getExpenseGroup()->getMembers() as $user) {
+        foreach ($entity->getExpenseGroup()->getMembers() as $user) {
             $this->entityManager->persist($user);
-            if ($user == $data->getMadeBy()) {
-                $balanceValue = $data->getPrice() - ($data->getPrice() / $data->getParticipants()->count());
+            if ($user == $entity->getMadeBy()) {
+                $balanceValue = $entity->getPrice() - ($entity->getPrice() / $entity->getParticipants()->count());
             } else {
-                $balanceValue = - ($data->getPrice() / $data->getParticipants()->count());
+                $balanceValue = - ($entity->getPrice() / $entity->getParticipants()->count());
             }
 
-            $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $data->getExpenseGroup());
+            $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $entity->getExpenseGroup());
             if (!$lastBalance) {
                 $balance = new Balance;
                 $balance->setBalanceUser($user);
-                $balance->setBalanceGroup($data->getExpenseGroup());
+                $balance->setBalanceGroup($entity->getExpenseGroup());
                 $balance->setValue($balanceValue);
                 $this->entityManager->persist($balance);
                 $balances[] = clone $balance;
@@ -179,15 +214,5 @@ class ExpenseDataPersister implements ContextAwareDataPersisterInterface
                 }
             }
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function remove($data, array $context = [])
-    {
-        $this->entityManager->remove($data);
-        $this->calculateAllBalances($data);
-        $this->entityManager->flush();
     }
 }
