@@ -122,13 +122,23 @@ class ExpenseSubscriber implements EventSubscriberInterface
             $balanceValue = 0;
             foreach ($this->expenseRepository->findExpenseByUserAndGroup($user, $entity->getExpenseGroup()) as $expense) {
                 if ($user == $expense->getMadeBy()) {
-                    $balanceValue += $expense->getPrice() - ($expense->getPrice() / $expense->getParticipants()->count());
+                    if ($expense->getParticipants()->count() == 1 && !$expense->getParticipants()->contains($user)) {
+                        $balanceValue += $expense->getPrice();
+                    } else {
+                        $balanceValue += $expense->getPrice() - ($expense->getPrice() / $expense->getParticipants()->count());
+                    }
                 } else {
                     $balanceValue += - ($expense->getPrice() / $expense->getParticipants()->count());
                 }
             }
             $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $entity->getExpenseGroup());
             $lastBalance->setValue($balanceValue);
+
+            /*TODO Recruter mathématicien*/
+            if ($lastBalance->getValue() < 3) {
+                $lastBalance->setValue(0);
+            }
+
             $this->entityManager->persist($lastBalance);
             $balances[] = clone $lastBalance;
         }
