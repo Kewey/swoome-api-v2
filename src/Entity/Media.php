@@ -20,12 +20,8 @@ class Media
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["user:read", 'media:read', 'media:write'])]
-    private $url;
-
-    #[ORM\OneToOne(inversedBy: 'avatar', targetEntity: User::class, cascade: ['persist', 'remove'])]
     #[Groups(['media:read', 'media:write'])]
-    private $userAvatar;
+    private $url;
 
     public function getId(): ?int
     {
@@ -40,18 +36,6 @@ class Media
     public function setUrl(string $url): self
     {
         $this->url = $url;
-
-        return $this;
-    }
-
-    public function getUserAvatar(): ?User
-    {
-        return $this->userAvatar;
-    }
-
-    public function setUserAvatar(?User $userAvatar): self
-    {
-        $this->userAvatar = $userAvatar;
 
         return $this;
     }
