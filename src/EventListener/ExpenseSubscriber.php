@@ -127,8 +127,8 @@ class ExpenseSubscriber implements EventSubscriberInterface
                     } else {
                         $balanceValue += $expense->getPrice() - ($expense->getPrice() / $expense->getParticipants()->count());
                     }
-                } elseif ($entity->getParticipants()->contains($user)) {
-                    $balanceValue += - ($entity->getPrice() / $entity->getParticipants()->count());
+                } elseif ($expense->getParticipants()->contains($user)) {
+                    $balanceValue += - ($expense->getPrice() / $expense->getParticipants()->count());
                 } else {
                     $balanceValue = 0;
                 }
