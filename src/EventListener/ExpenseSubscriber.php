@@ -54,7 +54,6 @@ class ExpenseSubscriber implements EventSubscriberInterface
     public function prePersist(LifecycleEventArgs $args): void
     {
         $this->addDatasToExpense('prePersist', $args);
-        $this->entityManager->flush();
     }
 
     public function postPersist(LifecycleEventArgs $args): void

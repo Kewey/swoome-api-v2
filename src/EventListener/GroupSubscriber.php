@@ -71,10 +71,9 @@ class GroupSubscriber implements EventSubscriberInterface
         foreach ($entity->getMembers() as $user) {
             if (!$this->balanceRepository->findBalanceByUserByGroup($user, $entity)) {
                 $entity->addBalance($this->createEmptyBalance($user));
-                $this->entityManager->persist($user);
             }
+            $this->entityManager->persist($user);
         }
-
         $this->entityManager->flush();
     }
 

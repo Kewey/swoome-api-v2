@@ -1,16 +1,13 @@
 <?php
-// api/src/Controller/CreateBookPublication.php
+// api/src/Controller/MediaUploadController.php
 
 namespace App\Controller;
 
-use App\Entity\Balance;
 use App\Factory\JsonResponseFactory;
-use App\Entity\Group;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Aws\S3\S3Client;
 
