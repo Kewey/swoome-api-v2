@@ -137,7 +137,7 @@ class ExpenseSubscriber implements EventSubscriberInterface
             $lastBalance->setValue($balanceValue);
 
             /*TODO Recruter mathématicien*/
-            if ($lastBalance->getValue() < 3) {
+            if (-3 < $lastBalance->getValue() && $lastBalance->getValue() < 3) {
                 $lastBalance->setValue(0);
             }
 
@@ -181,7 +181,7 @@ class ExpenseSubscriber implements EventSubscriberInterface
             }
 
             /*TODO Recruter mathématicien*/
-            if ($balance->getValue() < 3) {
+            if (-3 < $balance->getValue() && $balance->getValue() < 3) {
                 $balance->setValue(0);
             }
 
