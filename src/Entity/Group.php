@@ -233,7 +233,9 @@ class Group
     {
         $sumExpenses = 0;
         foreach ($this->getExpenses() as $expense) {
-            $sumExpenses += $expense->getPrice();
+            if ($expense->getType()->getName() != 'Remboursement') {
+                $sumExpenses += $expense->getPrice();
+            }
         }
         return $sumExpenses;
     }

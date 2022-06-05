@@ -13,6 +13,12 @@
             "./src/Entity/.gitignore"
         ]
     },
+    "aws/aws-crt-php": {
+        "version": "v1.0.2"
+    },
+    "aws/aws-sdk-php": {
+        "version": "3.224.3"
+    },
     "doctrine/annotations": {
         "version": "1.13",
         "recipe": {
@@ -127,6 +133,15 @@
     "gesdinet/jwt-refresh-token-bundle": {
         "version": "v1.0.1"
     },
+    "guzzlehttp/guzzle": {
+        "version": "7.4.3"
+    },
+    "guzzlehttp/promises": {
+        "version": "1.5.1"
+    },
+    "guzzlehttp/psr7": {
+        "version": "2.2.1"
+    },
     "hashids/hashids": {
         "version": "4.1.0"
     },
@@ -156,6 +171,9 @@
     },
     "monolog/monolog": {
         "version": "2.6.0"
+    },
+    "mtdowling/jmespath.php": {
+        "version": "2.6.1"
     },
     "namshi/jose": {
         "version": "7.2.3"
@@ -196,11 +214,23 @@
     "psr/event-dispatcher": {
         "version": "1.0.0"
     },
+    "psr/http-client": {
+        "version": "1.0.1"
+    },
+    "psr/http-factory": {
+        "version": "1.0.1"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/link": {
         "version": "1.0.0"
     },
     "psr/log": {
         "version": "1.1.4"
+    },
+    "ralouphie/getallheaders": {
+        "version": "3.0.3"
     },
     "stella-maris/clock": {
         "version": "0.1.4"
