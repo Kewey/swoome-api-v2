@@ -109,6 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $isVerified = false;
 
     #[ORM\OneToOne(mappedBy: 'userAvatar', targetEntity: Media::class, cascade: ['persist', 'remove'])]
+    #[Groups(["user:read", "user:write"])]
     private $avatar;
 
     public function __construct()
