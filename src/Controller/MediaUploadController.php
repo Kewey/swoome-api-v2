@@ -28,8 +28,9 @@ class MediaUploadController extends AbstractController
      * @Route("/api/media_upload", methods={"POST"}, name="media_upload")
      * @return Response
      */
-    public function __invoke(): Response
+    public function __invoke(Request $request): Response
     {
+        dd($request);
         if (isset($_FILES['file'])) {
             $uuid = Uuid::v4();
             $file_name = $uuid . '_' . $_FILES['file']['name'];
