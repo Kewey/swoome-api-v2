@@ -127,8 +127,10 @@ class ExpenseSubscriber implements EventSubscriberInterface
                     } else {
                         $balanceValue += $expense->getPrice() - ($expense->getPrice() / $expense->getParticipants()->count());
                     }
+                } elseif ($entity->getParticipants()->contains($user)) {
+                    $balanceValue += - ($entity->getPrice() / $entity->getParticipants()->count());
                 } else {
-                    $balanceValue += - ($expense->getPrice() / $expense->getParticipants()->count());
+                    $balanceValue = 0;
                 }
             }
             $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $entity->getExpenseGroup());
