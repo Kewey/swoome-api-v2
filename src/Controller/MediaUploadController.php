@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Media;
 use App\Factory\JsonResponseFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -10,6 +11,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Aws\S3\S3Client;
+use Aws\S3\Exception\S3Exception;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\Uid\Uuid;
 
 class MediaUploadController extends AbstractController
 {
@@ -22,15 +26,17 @@ class MediaUploadController extends AbstractController
     }
     /**
      * @Route("/api/media_upload", methods={"POST"}, name="media_upload")
-     * @param Request $request
      * @return Response
      */
-    public function __invoke(Request $request): Response
+    public function __invoke(): Response
     {
         if (isset($_FILES['file'])) {
-            $file_name = $_FILES['file']['name'];
+            $uuid = Uuid::v4();
+            $file_name = $uuid . '_' . $_FILES['file']['name'];
             $temp_file_location = $_FILES['file']['tmp_name'];
-        }
+        } else {
+            throw new BadRequestHttpException('Aucun fichier trouvé');
+        };
 
         $s3 = new S3Client([
             'region'  => 'eu-central-1',
@@ -40,22 +46,25 @@ class MediaUploadController extends AbstractController
                 'secret' => $_ENV['AWS_SECRET_KEY'],
             ]
         ]);
-
-        $result = $s3->putObject([
-            'Bucket' => 'arn:aws:s3:::swoome/avatars',
-            'Key'    => $file_name,
-            'SourceFile' => $temp_file_location
-        ]);
+        try {
+            $result = $s3->putObject([
+                'Bucket' => 'swoome',
+                'Key'    => 'avatars/' . $file_name,
+                'SourceFile' => $temp_file_location
+            ]);
+        } catch (S3Exception $e) {
+            throw new BadRequestHttpException($e->getMessage());
+        }
 
         // Print the body of the result by indexing into the result object.
-        var_dump($result);
 
-        /** @var User $user */
-        $user = $this->getUser();
 
-        $this->entityManager->persist($user);
+        $media = new Media();
+        $media->setUrl($result->get('ObjectURL'));
+
+        $this->entityManager->persist($media);
         $this->entityManager->flush();
 
-        return $this->jsonResponseFactory->create($user);
+        return $this->jsonResponseFactory->create($media);
     }
 }

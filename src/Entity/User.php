@@ -108,6 +108,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["user:read"])]
     private $isVerified = false;
 
+    #[ORM\OneToOne(mappedBy: 'userAvatar', targetEntity: Media::class, cascade: ['persist', 'remove'])]
+    private $avatar;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
@@ -409,6 +412,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?Media
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?Media $avatar): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($avatar === null && $this->avatar !== null) {
+            $this->avatar->setUserAvatar(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($avatar !== null && $avatar->getUserAvatar() !== $this) {
+            $avatar->setUserAvatar($this);
+        }
+
+        $this->avatar = $avatar;
 
         return $this;
     }
