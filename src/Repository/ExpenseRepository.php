@@ -22,9 +22,13 @@ class ExpenseRepository extends ServiceEntityRepository
 
     public function findExpenseByUserAndGroup($user, $group)
     {
-        return $this->createQueryBuilder('e')
+        $qb = $this->createQueryBuilder('e');
+        return $qb
             ->where('e.expenseGroup = :group')
-            ->andWhere(':user MEMBER OF e.participants')
+            ->andWhere($qb->expr()->orX(
+                $qb->expr()->isMemberOf(':user', 'e.participants'),
+                $qb->expr()->eq(':user', 'e.madeBy'),
+            ))
             ->setParameter('group', $group)
             ->setParameter('user', $user)
             ->getQuery()

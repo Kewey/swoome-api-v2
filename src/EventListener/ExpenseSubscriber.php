@@ -133,6 +133,7 @@ class ExpenseSubscriber implements EventSubscriberInterface
                     $balanceValue += 0;
                 }
             }
+
             $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $entity->getExpenseGroup());
             $lastBalance->setValue($balanceValue);
 
