@@ -20,7 +20,7 @@ class Media
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["user:read", "user:write", 'media:read', 'media:write'])]
+    #[Groups(["user:read", 'media:read', 'media:write'])]
     private $url;
 
     #[ORM\OneToOne(inversedBy: 'avatar', targetEntity: User::class, cascade: ['persist', 'remove'])]
