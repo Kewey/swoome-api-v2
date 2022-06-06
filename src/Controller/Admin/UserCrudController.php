@@ -9,16 +9,27 @@ use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Config\KeyValueStore;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserCrudController extends AbstractCrudController
 {
@@ -26,10 +37,11 @@ class UserCrudController extends AbstractCrudController
     private $adminUrlGenerator;
     private $entityManager;
 
-    public function __construct(AdminUrlGenerator $adminUrlGenerator, EntityManagerInterface $entityManager)
+    public function __construct(AdminUrlGenerator $adminUrlGenerator, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher)
     {
         $this->adminUrlGenerator = $adminUrlGenerator;
         $this->entityManager = $entityManager;
+        $this->passwordHasher = $passwordHasher;
     }
 
     public static function getEntityFqcn(): string
@@ -67,9 +79,51 @@ class UserCrudController extends AbstractCrudController
                 'multiple' => true,
                 'expanded' => false,
             ]),
+            Field::new('password', 'Mot de passe')->onlyWhenCreating()
+                ->setHelp('Merci de saisir un mot de passe de 6 caractères minimum')
+                ->setFormType(RepeatedType::class)
+                ->setFormTypeOptions([
+                    'required' => true,
+                    'type' => PasswordType::class,
+                    'first_options' => [
+                        'label' => 'Mot de passe',
+                        'constraints' => [
+                            new NotBlank([
+                                'message' => 'Merci de saisir un mot de passe',
+                            ]),
+                            new Length([
+                                'min' => 6,
+                                'minMessage' => 'Votre mot de passe doit dépasser {{ limit }} caractères',
+                                // max length allowed by Symfony for security reasons
+                                'max' => 4096,
+                            ]),
+                        ]
+                    ],
+                    'second_options' => ['label' => 'Répéter le mot de passe'],
+                ]),
             AssociationField::new('groups', 'Groupes'),
             BooleanField::new('isVerified', 'Compte vérifié')
         ];
+    }
+
+    public function createNewFormBuilder(EntityDto $entityDto, KeyValueStore $formOptions, AdminContext $context): FormBuilderInterface
+    {
+        $formBuilder = parent::createNewFormBuilder($entityDto, $formOptions, $context);
+
+        $this->addHasherPasswordEventListener($formBuilder);
+
+        return $formBuilder;
+    }
+
+    protected function addHasherPasswordEventListener(FormBuilderInterface $formBuilder)
+    {
+        $formBuilder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            /** @var User $user */
+            $user = $event->getData();
+            if ($user->getPassword()) {
+                $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
+            }
+        });
     }
 
     /**
