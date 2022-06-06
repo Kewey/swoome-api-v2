@@ -13,6 +13,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'normalization_context' => ['groups' => ['refund:read']],
         'denormalization_context' => ['groups' => ['refund:write']],
     ],
+    collectionOperations: [
+        'post',
+        'get' => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Désolé, vous devez être admin pour voir tous les remboursements.",
+        ],
+    ],
 )]
 class Refund
 {

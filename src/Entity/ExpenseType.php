@@ -11,10 +11,19 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ExpenseTypeRepository::class)]
-#[ApiResource(attributes: [
-    'normalization_context' => ['groups' => ['expense_type:read']],
-    'denormalization_context' => ['groups' => ['expense_type:write']],
-],)]
+#[ApiResource(
+    attributes: [
+        'normalization_context' => ['groups' => ['expense_type:read']],
+        'denormalization_context' => ['groups' => ['expense_type:write']],
+    ],
+    collectionOperations: [
+        'post',
+        'get' => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Désolé, vous devez être admin pour voir tous les types de dépenses.",
+        ],
+    ],
+)]
 class ExpenseType
 {
     #[ORM\Id]

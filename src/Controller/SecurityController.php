@@ -10,7 +10,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SecurityController extends AbstractController
 {
     /**
-     * @Route("/login", name="login")
+     * @Route("/", name="login")
      */
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
@@ -52,13 +52,13 @@ class SecurityController extends AbstractController
             'csrf_token_intention' => 'authenticate',
 
             // the label displayed for the username form field (the |trans filter is applied to it)
-            'username_label' => 'Your email',
+            'username_label' => 'Ton email',
 
             // the label displayed for the password form field (the |trans filter is applied to it)
-            'password_label' => 'Your password',
+            'password_label' => 'Ton password',
 
             // the label displayed for the Sign In form button (the |trans filter is applied to it)
-            'sign_in_label' => 'Log in',
+            'sign_in_label' => 'Se connecter',
 
             // the 'name' HTML attribute of the <input> used for the username field (default: '_username')
             'username_parameter' => '_username',

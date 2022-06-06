@@ -29,7 +29,10 @@ use Symfony\Component\Validator\Constraints as Assert;
             'path' => '/auth/register',
             "validation_groups" => ["Default", "create"],
         ],
-        'get',
+        'get' => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Désolé, vous devez être admin pour voir tous les utilisateurs.",
+        ],
     ],
     itemOperations: [
         'get',

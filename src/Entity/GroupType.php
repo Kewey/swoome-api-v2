@@ -11,10 +11,19 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: GroupTypeRepository::class)]
-#[ApiResource(attributes: [
-    'normalization_context' => ['groups' => ['group_type:read']],
-    'denormalization_context' => ['groups' => ['group_type:write']],
-],)]
+#[ApiResource(
+    attributes: [
+        'normalization_context' => ['groups' => ['group_type:read']],
+        'denormalization_context' => ['groups' => ['group_type:write']],
+    ],
+    collectionOperations: [
+        'post',
+        'get' => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Désolé, vous devez être admin pour voir tous les types de groupes.",
+        ],
+    ],
+)]
 class GroupType
 {
     #[ORM\Id]

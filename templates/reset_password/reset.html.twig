@@ -1,0 +1,10 @@
+{% extends  '@EasyAdmin/page/content.html.twig'  %}
+{% set url = ea_url()%}
+{% block page_title %}Changer le mot de passe
+{% endblock %}
+{% block page_content %}
+	{{ form_start(resetForm) }}
+	{{ form_widget(resetForm.plainPassword) }}
+	<button class="btn btn-primary">Changer le mot de passe</button>
+	{{ form_end(resetForm) }}
+{% endblock %}

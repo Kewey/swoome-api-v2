@@ -17,6 +17,13 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
         'normalization_context' => ['groups' => ['group:read']],
         'denormalization_context' => ['groups' => ['group:write']],
     ],
+    collectionOperations: [
+        'post',
+        'get' => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Désolé, vous devez être admin pour voir tous les groupes.",
+        ],
+    ],
 )]
 class Group
 {
