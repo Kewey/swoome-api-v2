@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -34,7 +35,7 @@ class ExpenseCrudController extends AbstractCrudController
     {
         return [
             TextField::new('name', 'Titre')->setRequired(true),
-            IntegerField::new('price', 'Prix')->setRequired(true),
+            MoneyField::new('price', 'Prix')->setCurrency('EUR')->setStoredAsCents(true)->setRequired(true),
             DateTimeField::new('createdAt', 'Dépense créée le')->setRequired(true),
             DateTimeField::new('expenseAt', 'Dépense faite le')->setRequired(true),
             TextareaField::new('description'),
