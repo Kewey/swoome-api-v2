@@ -16,13 +16,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         'normalization_context' => ['groups' => ['group_type:read']],
         'denormalization_context' => ['groups' => ['group_type:write']],
     ],
-    collectionOperations: [
-        'post',
-        'get' => [
-            "security" => "is_granted('ROLE_ADMIN')",
-            "security_message" => "Désolé, vous devez être admin pour voir tous les types de groupes.",
-        ],
-    ],
 )]
 class GroupType
 {
