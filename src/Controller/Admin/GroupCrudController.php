@@ -41,6 +41,7 @@ class GroupCrudController extends AbstractCrudController
     {
         return [
             TextField::new('name', 'Nom du groupe')->setRequired(true),
+            TextField::new('code', 'Code')->hideOnForm()->setRequired(true),
             AssociationField::new('type', 'Type de groupe')->setRequired(true),
             AssociationField::new('members', 'Membres')->setRequired(true)
         ];
