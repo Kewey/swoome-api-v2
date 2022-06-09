@@ -43,7 +43,7 @@ class SecurityController extends AbstractController
             // the title visible above the login form (define this option only if you are
             // rendering the login template in a regular Symfony controller; when rendering
             // it from an EasyAdmin Dashboard this is automatically set as the Dashboard title)
-            'page_title' => 'Swoome Backoffice',
+            'page_title' => '<img class="pe-3 mb-4" src="./logos/logo.png">',
 
             'target_path' => $this->generateUrl('admin'),
 
@@ -55,7 +55,7 @@ class SecurityController extends AbstractController
             'username_label' => 'Ton email',
 
             // the label displayed for the password form field (the |trans filter is applied to it)
-            'password_label' => 'Ton password',
+            'password_label' => 'Ton mot de passe',
 
             // the label displayed for the Sign In form button (the |trans filter is applied to it)
             'sign_in_label' => 'Se connecter',

@@ -65,6 +65,16 @@ class UserCrudController extends AbstractCrudController
             ->add(Crud::PAGE_EDIT, $changePassword);
     }
 
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular(
+                fn (?User $user, ?string $pageName) => $user ? $user->__toString() : 'Utilisateur'
+            )
+            ->setEntityLabelInPlural(function (?User $user, ?string $pageName) {
+                return 'edit' === $pageName ? $user->__toString() : 'Utilisateurs';
+            });
+    }
 
     public function configureFields(string $pageName): iterable
     {

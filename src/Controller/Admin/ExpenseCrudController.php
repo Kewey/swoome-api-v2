@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Expense;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
@@ -29,6 +30,17 @@ class ExpenseCrudController extends AbstractCrudController
         $dateTime->format('d-m-Y H:i:s');
         $expense->setCreatedAt($dateTime);
         return $expense;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular(
+                fn (?Expense $expense, ?string $pageName) => $expense ? $expense->__toString() : 'Dépense'
+            )
+            ->setEntityLabelInPlural(function (?Expense $expense, ?string $pageName) {
+                return 'edit' === $pageName ? $expense->__toString() : 'Dépenses';
+            });
     }
 
     public function configureFields(string $pageName): iterable

@@ -3,7 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Group;
+use App\Entity\GroupType;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -20,6 +22,17 @@ class GroupCrudController extends AbstractCrudController
         EntityManagerInterface $entityManager,
     ) {
         $this->entityManager = $entityManager;
+    }
+
+    public function configureCrud(Crud $crud): Crud
+    {
+        return $crud
+            ->setEntityLabelInSingular(
+                fn (?Group $group, ?string $pageName) => $group ? $group->__toString() : 'Groupe'
+            )
+            ->setEntityLabelInPlural(function (?Group $group, ?string $pageName) {
+                return 'edit' === $pageName ? $group->__toString() : 'Groupes';
+            });
     }
 
     public function createEntity(string $entityFqcn)

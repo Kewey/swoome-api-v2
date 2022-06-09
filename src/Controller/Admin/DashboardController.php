@@ -40,19 +40,19 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Swoome Api Symfony');
+            ->setTitle('<img class="pe-3" src="./logos/logo.png">');
     }
 
     public function configureMenuItems(): iterable
     {
 
         return [
-            MenuItem::linkToDashboard('Dashboard', 'fa fa-home'),
-            MenuItem::linkToCrud('Catégories Groupes', 'fa-solid fa-people-roof', GroupType::class),
-            MenuItem::linkToCrud('Catégories Dépenses', 'fa-solid fa-tag', ExpenseType::class),
+            MenuItem::linkToDashboard('Accueil', 'fa fa-home'),
+            MenuItem::linkToCrud('Catégories Groupe', 'fa-solid fa-people-roof', GroupType::class),
+            MenuItem::linkToCrud('Catégories Dépense', 'fa-solid fa-tag', ExpenseType::class),
             MenuItem::linkToCrud('Dépenses', 'fas fa-money-bill-transfer', Expense::class),
             MenuItem::linkToCrud('Groupes', 'fas fa-user-group', Group::class),
-            MenuItem::linkToCrud('Users', 'fa fa-user', User::class),
+            MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', User::class),
         ];
     }
 }
