@@ -32,9 +32,10 @@ class MediaUploadController extends AbstractController
     {
 
         if ($request->get('file')) {
+            dd($request->get('file'));
             $uuid = Uuid::v4();
-            $file_name = $uuid . '_' . $_FILES['file']['name'];
-            $temp_file_location = $_FILES['file']['tmp_name'];
+            $file_name = $uuid . '_' . $request->get('file')['name'];
+            $temp_file_location = $request->get('file')['tmp_name'];
         } else {
             throw new BadRequestHttpException('Aucun fichier trouvé');
         };
