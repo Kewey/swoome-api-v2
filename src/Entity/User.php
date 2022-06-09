@@ -86,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[Groups(["user:read", "user:write"])]
     #[ApiSubresource]
-    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members')]
+    #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members', cascade: ["persist"])]
     private $groups;
 
     #[ORM\OneToMany(mappedBy: 'madeBy', targetEntity: Expense::class)]
