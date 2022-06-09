@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20220609152030 extends AbstractMigration
+final class Version20220609153603 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -30,9 +30,9 @@ final class Version20220609152030 extends AbstractMigration
         $this->addSql('CREATE TABLE group_user (group_id INT NOT NULL, user_id INT NOT NULL, INDEX IDX_A4C98D39FE54D947 (group_id), INDEX IDX_A4C98D39A76ED395 (user_id), PRIMARY KEY(group_id, user_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE group_type (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(255) NOT NULL, emoji VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE media (id INT AUTO_INCREMENT NOT NULL, url VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE refresh_tokens (id INT AUTO_INCREMENT NOT NULL, refresh_token VARCHAR(128) NOT NULL, username VARCHAR(255) NOT NULL, valid DATETIME NOT NULL, UNIQUE INDEX UNIQ_9BACE7E1C74F2195 (refresh_token), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE refund (id INT AUTO_INCREMENT NOT NULL, refund_group_id INT NOT NULL, refunder_id INT NOT NULL, receiver_id INT NOT NULL, price INT NOT NULL, INDEX IDX_5B2C14588FBBEB44 (refund_group_id), INDEX IDX_5B2C145870C604CC (refunder_id), INDEX IDX_5B2C1458CD53EDB6 (receiver_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE `user` (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, username VARCHAR(255) NOT NULL, is_verified TINYINT(1) NOT NULL, UNIQUE INDEX UNIQ_8D93D649E7927C74 (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE refresh_tokens (id INT AUTO_INCREMENT NOT NULL, refresh_token VARCHAR(128) NOT NULL, username VARCHAR(255) NOT NULL, valid DATETIME NOT NULL, PRIMARY KEY(id))');
         $this->addSql('ALTER TABLE balance ADD CONSTRAINT FK_ACF41FFE9385F12F FOREIGN KEY (balance_user_id) REFERENCES `user` (id)');
         $this->addSql('ALTER TABLE balance ADD CONSTRAINT FK_ACF41FFED5D468F7 FOREIGN KEY (balance_group_id) REFERENCES `group` (id)');
         $this->addSql('ALTER TABLE expense ADD CONSTRAINT FK_2D3A8DA690B9D269 FOREIGN KEY (made_by_id) REFERENCES `user` (id)');
@@ -82,8 +82,8 @@ final class Version20220609152030 extends AbstractMigration
         $this->addSql('DROP TABLE group_user');
         $this->addSql('DROP TABLE group_type');
         $this->addSql('DROP TABLE media');
+        $this->addSql('DROP TABLE refresh_tokens');
         $this->addSql('DROP TABLE refund');
         $this->addSql('DROP TABLE `user`');
-        $this->addSql('DROP TABLE refresh_tokens');
     }
 }
