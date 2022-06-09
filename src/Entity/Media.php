@@ -23,7 +23,7 @@ class Media
     #[Groups(['media:read', 'media:write', "user:read"])]
     private $url;
 
-    #[ORM\OneToOne(mappedBy: 'avatar', targetEntity: User::class, cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'avatar', targetEntity: User::class, cascade: ['persist'])]
     #[Groups(["media:write", "media:read"])]
     private $user;
 
