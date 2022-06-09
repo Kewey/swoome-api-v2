@@ -84,7 +84,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255)]
     private $username;
 
-    #[Groups(["user:read", "user:write"])]
+    #[Groups(["user:read",  "user:write"])]
     #[ApiSubresource]
     #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members', cascade: ["persist"])]
     private $groups;
@@ -114,6 +114,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Groups(["user:read", "user:write"])]
     private $pushToken;
+
+    #[Groups(["user:read",  "user:write"])]
+    #[ORM\OneToOne(inversedBy: 'user', targetEntity: Media::class, cascade: ['persist', 'remove'])]
+    private $avatar;
 
     public function __construct()
     {
@@ -428,6 +432,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPushToken(?string $pushToken): self
     {
         $this->pushToken = $pushToken;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?Media
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?Media $avatar): self
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }
