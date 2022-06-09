@@ -30,7 +30,7 @@ class MediaUploadController extends AbstractController
      */
     public function __invoke(Request $request): Response
     {
-
+        dd($request);
         if ($request->get('file')) {
             dd($request->get('file'));
             $uuid = Uuid::v4();
