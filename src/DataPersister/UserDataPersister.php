@@ -6,6 +6,7 @@ use ApiPlatform\Core\DataPersister\ContextAwareDataPersisterInterface;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use ExpoSDK\Expo;
 
 class UserDataPersister implements ContextAwareDataPersisterInterface
 {
@@ -37,6 +38,16 @@ class UserDataPersister implements ContextAwareDataPersisterInterface
                 $this->passwordHasher->hashPassword($data, $data->getPlainPassword())
             );
             $data->eraseCredentials();
+        }
+
+        if (
+            ($context['collection_operation_name'] ?? null) === 'put' ||
+            ($context['graphql_operation_name'] ?? null) === 'edit'
+        ) {
+            if ($data->getPushToken()) {
+                $expo = Expo::driver('file');
+                $expo->subscribe('global', [$data->getPushToken()]);
+            }
         }
 
         $this->entityManager->persist($data);
