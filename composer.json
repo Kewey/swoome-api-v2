@@ -11,6 +11,7 @@
     "ext-intl": "*",
     "api-platform/core": "^2.6",
     "aws/aws-sdk-php": "^3.224",
+    "ctwillie/expo-server-sdk-php": "^2.0",
     "doctrine/annotations": "^1.13",
     "doctrine/doctrine-bundle": "^2.6",
     "doctrine/doctrine-fixtures-bundle": "^3.4",

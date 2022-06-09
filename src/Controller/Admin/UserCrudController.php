@@ -102,7 +102,8 @@ class UserCrudController extends AbstractCrudController
                     'second_options' => ['label' => 'Répéter le mot de passe'],
                 ]),
             AssociationField::new('groups', 'Groupes')->setFormTypeOptions(['by_reference' => false]),
-            BooleanField::new('isVerified', 'Compte vérifié')
+            BooleanField::new('isVerified', 'Compte vérifié'),
+            TextField::new('pushToken')->hideOnForm(),
         ];
     }
 

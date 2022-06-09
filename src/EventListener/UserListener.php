@@ -7,8 +7,8 @@ use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
-use Symfony\Component\Mime\Email;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
+use ExpoSDK\Expo;
 
 class UserListener
 {
@@ -29,7 +29,10 @@ class UserListener
             return;
         }
 
-        //$entityManager = $args->getObjectManager();
+        if ($entity->getPushToken()) {
+            $expo = Expo::driver('file');
+            $expo->subscribe('global', [$entity->getPushToken()]);
+        }
 
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             'app_verify_email',

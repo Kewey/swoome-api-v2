@@ -111,6 +111,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["user:read"])]
     private $isVerified = false;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["user:read", "user:write"])]
+    private $pushToken;
+
     public function __construct()
     {
         $this->groups = new ArrayCollection();
@@ -412,6 +416,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): self
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getPushToken(): ?string
+    {
+        return $this->pushToken;
+    }
+
+    public function setPushToken(?string $pushToken): self
+    {
+        $this->pushToken = $pushToken;
 
         return $this;
     }

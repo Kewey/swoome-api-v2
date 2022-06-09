@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use ExpoSDK\ExpoMessage;
+use ExpoSDK\Expo;
 
 class JoinGroupController extends AbstractController
 {
@@ -51,12 +53,31 @@ class JoinGroupController extends AbstractController
             throw new BadRequestHttpException('Vous appartenez déjà à ce groupe');
         }
 
+
+
+        $recipientsPush = [];
+        foreach ($group->getMembers() as $member) {
+            if ($member->getPushToken()) {
+                $recipientsPush[] = $member->getPushToken();
+            }
+        }
+
+        if ($recipientsPush) {
+            $message = new ExpoMessage([
+                'title' => $user->getUsername() . ' a rejoint ' . $group->getName(),
+                'body' => 'Sera-t-il le sauveur ou le gouffre financier du groupe ?',
+            ]);
+            (new Expo)->send($message)->to($recipientsPush)->push();
+        }
+
+
         $user->addGroup($group);
 
         $balance = new Balance;
         $balance->setValue(0);
         $balance->setBalanceGroup($group);
         $user->addBalance($balance);
+
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d651d33684412893baa7c0ae91564ca7",
+    "content-hash": "abf088a2750f9b1fe88e0aa47f1cf166",
     "packages": [
         {
             "name": "api-platform/core",
@@ -307,6 +307,59 @@
                 "source": "https://github.com/aws/aws-sdk-php/tree/3.224.4"
             },
             "time": "2022-06-06T18:32:10+00:00"
+        },
+        {
+            "name": "ctwillie/expo-server-sdk-php",
+            "version": "v2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ctwillie/expo-server-sdk-php.git",
+                "reference": "040f5d0709779b006c1f2838d175e5447444518a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ctwillie/expo-server-sdk-php/zipball/040f5d0709779b006c1f2838d175e5447444518a",
+                "reference": "040f5d0709779b006c1f2838d175e5447444518a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-zlib": "*",
+                "guzzlehttp/guzzle": "^6|^7",
+                "php": ">=7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ExpoSDK\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cedric Twillie",
+                    "email": "ctwillie77@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Server-side library for working with Expo using PHP",
+            "homepage": "https://github.com/ctwillie/expo-server-sdk-php",
+            "keywords": [
+                "expo",
+                "expo-server-sdk-php",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/ctwillie/expo-server-sdk-php/issues",
+                "source": "https://github.com/ctwillie/expo-server-sdk-php"
+            },
+            "time": "2021-10-26T22:49:01+00:00"
         },
         {
             "name": "doctrine/annotations",
