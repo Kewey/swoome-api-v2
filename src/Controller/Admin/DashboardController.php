@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Balance;
 use App\Entity\Expense;
 use App\Entity\ExpenseType;
 use App\Entity\Group;
@@ -51,6 +52,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Catégories Groupe', 'fa-solid fa-people-roof', GroupType::class),
             MenuItem::linkToCrud('Catégories Dépense', 'fa-solid fa-tag', ExpenseType::class),
             MenuItem::linkToCrud('Dépenses', 'fas fa-money-bill-transfer', Expense::class),
+            MenuItem::linkToCrud('Balances', 'fas fa-balance-scale', Balance::class),
             MenuItem::linkToCrud('Groupes', 'fas fa-user-group', Group::class),
             MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', User::class),
         ];

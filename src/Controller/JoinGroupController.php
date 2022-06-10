@@ -80,7 +80,6 @@ class JoinGroupController extends AbstractController
             $user->addBalance($balance);
         }
 
-
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
