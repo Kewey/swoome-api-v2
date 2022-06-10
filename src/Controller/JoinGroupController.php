@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Balance;
 use App\Factory\JsonResponseFactory;
 use App\Entity\Group;
+use App\Repository\BalanceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,10 +20,12 @@ class JoinGroupController extends AbstractController
 {
     public function __construct(
         EntityManagerInterface $entityManager,
-        JsonResponseFactory $jsonResponseFactory
+        JsonResponseFactory $jsonResponseFactory,
+        BalanceRepository $balanceRepository
     ) {
         $this->entityManager = $entityManager;
         $this->jsonResponseFactory = $jsonResponseFactory;
+        $this->balanceRepository = $balanceRepository;
     }
     /**
      * @Route("/api/join_group", methods={"POST"}, name="join_group")
