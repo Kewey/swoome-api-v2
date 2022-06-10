@@ -29,10 +29,11 @@ class UserListener
             return;
         }
 
-        if ($entity->getPushToken()) {
+        // TODO : Subscribe global push channel
+        /*if ($entity->getPushToken()) {
             $expo = Expo::driver('file');
             $expo->subscribe('global', [$entity->getPushToken()]);
-        }
+        }*/
 
         $signatureComponents = $this->verifyEmailHelper->generateSignature(
             'app_verify_email',
