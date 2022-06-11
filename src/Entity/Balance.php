@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BalanceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -32,9 +34,7 @@ class Balance
     #[Groups(["group:read", 'balance:read'])]
     private $balanceUser;
 
-    #[ORM\Column(type: 'integer')]
-    #[Groups(["group:read", 'balance:read'])]
-    private $value;
+    private $refundTemporaryValue;
 
     #[ORM\ManyToOne(targetEntity: Group::class, inversedBy: 'balances')]
     #[ORM\JoinColumn(nullable: false)]
@@ -57,14 +57,42 @@ class Balance
         return $this;
     }
 
+    #[Groups("group:read", 'balance:read')] // <- MAGIC IS HERE, you can set a group on a method.
     public function getValue(): ?int
     {
-        return $this->value;
+        $balanceValue = 0;
+
+        foreach ($this->getExpenses() as $expense) {
+            if ($this->balanceUser == $expense->getMadeBy()) {
+                if ($expense->getParticipants()->count() == 1 && !$expense->getParticipants()->contains($this->balanceUser)) {
+                    $balanceValue += $expense->getPrice();
+                } else {
+                    $balanceValue += $expense->getPrice() - ($expense->getPrice() / $expense->getParticipants()->count());
+                }
+            } elseif ($expense->getParticipants()->contains($this->balanceUser)) {
+                $balanceValue += - ($expense->getPrice() / $expense->getParticipants()->count());
+            } else {
+                $balanceValue += 0;
+            }
+        }
+
+        if (-3 < $balanceValue && $balanceValue < 3) {
+            $balanceValue = 0;
+        }
+
+        $this->refundTemporaryValue = $balanceValue;
+
+        return $balanceValue;
     }
 
-    public function setValue(int $value): self
+    public function getRefundTemporaryValue(): ?int
     {
-        $this->value = $value;
+        return $this->refundTemporaryValue;
+    }
+
+    public function setRefundTemporaryValue(int $refundTemporaryValue): self
+    {
+        $this->refundTemporaryValue = $refundTemporaryValue;
 
         return $this;
     }
@@ -79,5 +107,18 @@ class Balance
         $this->balanceGroup = $balanceGroup;
 
         return $this;
+    }
+
+    public function getExpenses(): array
+    {
+        $expenses = [];
+        foreach ($this->balanceGroup->getExpenses() as $expense) {
+            if ($expense->getParticipants()->contains($this->balanceUser)) {
+                $expenses[] = $expense;
+            } elseif ($expense->getMadeBy() == $this->balanceUser) {
+                $expenses[] = $expense;
+            }
+        }
+        return $expenses;
     }
 }

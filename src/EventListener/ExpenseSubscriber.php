@@ -2,12 +2,8 @@
 
 namespace App\EventListener;
 
-use App\Entity\Balance;
 use App\Entity\Expense;
-use App\Entity\Group;
 use App\Entity\Refund;
-use App\Repository\BalanceRepository;
-use App\Repository\ExpenseRepository;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,13 +23,9 @@ class ExpenseSubscriber implements EventSubscriberInterface
     public function __construct(
         EntityManagerInterface $entityManager,
         Security $security,
-        BalanceRepository $balanceRepository,
-        ExpenseRepository $expenseRepository
     ) {
         $this->entityManager = $entityManager;
         $this->security = $security;
-        $this->balanceRepository = $balanceRepository;
-        $this->expenseRepository = $expenseRepository;
     }
 
     // this method can only return the event names; you cannot define a
@@ -53,147 +45,83 @@ class ExpenseSubscriber implements EventSubscriberInterface
     // to both the entity object of the event and the entity manager itself
     public function prePersist(LifecycleEventArgs $args): void
     {
-        $this->addDatasToExpense('prePersist', $args);
+        $entity = $args->getObject();
+
+        if (!$entity instanceof Expense) {
+            return;
+        }
+
+        $this->addDatasToExpense($entity);
     }
 
     public function postPersist(LifecycleEventArgs $args): void
-    {
-        $this->removeRefunds('persist', $args);
-        $this->calculateBalances('persist', $args);
-    }
-
-    public function postUpdate(LifecycleEventArgs $args): void
-    {
-        $this->removeRefunds('update', $args);
-        $this->calculateAllBalances('update', $args);
-    }
-
-    public function postRemove(LifecycleEventArgs $args): void
-    {
-        $this->removeRefunds('delete', $args);
-        $this->calculateAllBalances('delete', $args);
-    }
-
-    private function addDatasToExpense(string $action, LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
 
         if (!$entity instanceof Expense) {
             return;
         }
-        $currentUser = $this->security->getUser();
 
-        if (!$entity->getMadeBy()) {
-            $entity->setMadeBy($currentUser);
+        $this->handleRefunds($entity);
+    }
+
+    public function postUpdate(LifecycleEventArgs $args): void
+    {
+        $entity = $args->getObject();
+
+        if (!$entity instanceof Expense) {
+            return;
         }
 
-        if (!$entity->getExpenseAt()) {
-            $entity->setExpenseAt(new DateTime());
+        $this->handleRefunds($entity);
+    }
+
+    public function postRemove(LifecycleEventArgs $args): void
+    {
+        $entity = $args->getObject();
+
+        if (!$entity instanceof Expense) {
+            return;
+        }
+
+        $this->handleRefunds($entity);
+    }
+
+    private function addDatasToExpense($expense): void
+    {
+
+        $currentUser = $this->security->getUser();
+
+        if (!$expense->getMadeBy()) {
+            $expense->setMadeBy($currentUser);
+        }
+
+        if (!$expense->getExpenseAt()) {
+            $expense->setExpenseAt(new DateTime());
         }
 
         $this->entityManager->flush();
     }
 
-    public function removeRefunds(string $action, LifecycleEventArgs $args)
+    public function handleRefunds($expense)
     {
-        $entity = $args->getObject();
+        $this->removeRefunds($expense);
+        $this->calculateRefunds($expense);
+        $this->entityManager->flush();
+    }
 
-        if (!$entity instanceof Expense) {
-            return;
-        }
-
-        $oldRefunds = $entity->getExpenseGroup()->getRefunds();
+    public function removeRefunds($expense)
+    {
+        $oldRefunds = $expense->getExpenseGroup()->getRefunds();
         foreach ($oldRefunds as $oldRefund) {
             $this->entityManager->remove($oldRefund);
         }
     }
 
-    public function calculateAllBalances(string $action, LifecycleEventArgs $args)
+    public function calculateRefunds($expense)
     {
-        $entity = $args->getObject();
 
-        if (!$entity instanceof Expense) {
-            return;
-        }
-
-        $balances = [];
-        foreach ($entity->getExpenseGroup()->getMembers() as $user) {
-            $balanceValue = 0;
-            foreach ($this->expenseRepository->findExpenseByUserAndGroup($user, $entity->getExpenseGroup()) as $expense) {
-                if ($user == $expense->getMadeBy()) {
-                    if ($expense->getParticipants()->count() == 1 && !$expense->getParticipants()->contains($user)) {
-                        $balanceValue += $expense->getPrice();
-                    } else {
-                        $balanceValue += $expense->getPrice() - ($expense->getPrice() / $expense->getParticipants()->count());
-                    }
-                } elseif ($expense->getParticipants()->contains($user)) {
-                    $balanceValue += - ($expense->getPrice() / $expense->getParticipants()->count());
-                } else {
-                    $balanceValue += 0;
-                }
-            }
-
-            $lastBalance = $this->balanceRepository->findBalanceByUserByGroup($user, $entity->getExpenseGroup());
-            $lastBalance->setValue($balanceValue);
-
-            /*TODO Recruter mathématicien*/
-            if (-3 < $lastBalance->getValue() && $lastBalance->getValue() < 3) {
-                $lastBalance->setValue(0);
-            }
-
-            $this->entityManager->persist($lastBalance);
-            $balances[] = clone $lastBalance;
-        }
-        $this->calculateRefunds($balances);
-        $this->entityManager->flush();
-    }
-
-    public function calculateBalances(string $action, LifecycleEventArgs $args)
-    {
-        $entity = $args->getObject();
-
-        if (!$entity instanceof Expense) {
-            return;
-        }
-
-        $balances = [];
-        foreach ($entity->getExpenseGroup()->getMembers() as $user) {
-            if ($user == $entity->getMadeBy()) {
-                if ($entity->getParticipants()->count() == 1 && !$entity->getParticipants()->contains($user)) {
-                    $balanceValue = $entity->getPrice();
-                } else {
-                    $balanceValue = $entity->getPrice() - ($entity->getPrice() / $entity->getParticipants()->count());
-                }
-            } elseif ($entity->getParticipants()->contains($user)) {
-                $balanceValue = - ($entity->getPrice() / $entity->getParticipants()->count());
-            } else {
-                $balanceValue = 0;
-            }
-
-            $balance = $this->balanceRepository->findBalanceByUserByGroup($user, $entity->getExpenseGroup());
-            if (!$balance) {
-                $balance = new Balance;
-                $balance->setBalanceUser($user);
-                $balance->setBalanceGroup($entity->getExpenseGroup());
-                $balance->setValue($balanceValue);
-            } else {
-                $balance->setValue($balance->getValue() + $balanceValue);
-            }
-
-            /*TODO Recruter mathématicien*/
-            if (-3 < $balance->getValue() && $balance->getValue() < 3) {
-                $balance->setValue(0);
-            }
-
-            $this->entityManager->persist($balance);
-            $balances[] = clone $balance;
-        }
-        $this->calculateRefunds($balances);
-        $this->entityManager->flush();
-    }
-
-    public function calculateRefunds($balances)
-    {
+        $balances = clone $expense->getExpenseGroup()->getBalances();
         if ($balances) {
             $positiveBalances = [];
             $negativeBalances = [];
@@ -211,24 +139,24 @@ class ExpenseSubscriber implements EventSubscriberInterface
 
             foreach ($positiveBalances as $positiveBalance) {
                 foreach ($negativeBalances as $negativeBalance) {
-                    if ($positiveBalance->getValue() > 0 && $negativeBalance->getValue() < 0) {
-                        if ($positiveBalance->getValue() >= - ($negativeBalance->getValue())) {
-                            $newPositiveBalance = $positiveBalance->getValue() + $negativeBalance->getValue();
-                            $newNegativeBalance = $negativeBalance->getValue() + (-$negativeBalance->getValue());
+                    if ($positiveBalance->getRefundTemporaryValue() > 0 && $negativeBalance->getRefundTemporaryValue() < 0) {
+                        if ($positiveBalance->getRefundTemporaryValue() >= - ($negativeBalance->getRefundTemporaryValue())) {
+                            $newPositiveBalance = $positiveBalance->getRefundTemporaryValue() + $negativeBalance->getRefundTemporaryValue();
+                            $newNegativeBalance = $negativeBalance->getRefundTemporaryValue() + (-$negativeBalance->getRefundTemporaryValue());
                         } else {
                             $newPositiveBalance = 0;
-                            $newNegativeBalance = $negativeBalance->getValue() + $positiveBalance->getValue();
+                            $newNegativeBalance = $negativeBalance->getRefundTemporaryValue() + $positiveBalance->getRefundTemporaryValue();
                         }
                         $refund = new Refund();
                         $refund->setRefundGroup($positiveBalance->getBalanceGroup());
-                        $refund->setPrice($newNegativeBalance - $negativeBalance->getValue());
+                        $refund->setPrice($newNegativeBalance - $negativeBalance->getRefundTemporaryValue());
                         $refund->setRefunder($negativeBalance->getBalanceUser());
                         $refund->setReceiver($positiveBalance->getBalanceUser());
 
                         $this->entityManager->persist($refund);
 
-                        $positiveBalance->setValue($newPositiveBalance);
-                        $negativeBalance->setValue($newNegativeBalance);
+                        $positiveBalance->setRefundTemporaryValue($newPositiveBalance);
+                        $negativeBalance->setRefundTemporaryValue($newNegativeBalance);
                     }
                 }
             }

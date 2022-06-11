@@ -80,7 +80,6 @@ class GroupSubscriber implements EventSubscriberInterface
     public function createEmptyBalance($user)
     {
         $balance = new Balance;
-        $balance->setValue(0);
         $balance->setBalanceUser($user);
         return $balance;
     }

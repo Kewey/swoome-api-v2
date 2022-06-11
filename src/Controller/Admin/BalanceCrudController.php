@@ -17,7 +17,7 @@ class BalanceCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            MoneyField::new('price', 'Prix')->setCurrency('EUR')->setStoredAsCents(true)->setRequired(true),
+            MoneyField::new('value', 'Prix')->setCurrency('EUR')->setStoredAsCents(true)->hideOnForm(),
             AssociationField::new('balanceUser', 'Utilisateur'),
             AssociationField::new('balanceGroup', 'Groupe'),
         ];
