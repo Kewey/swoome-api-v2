@@ -21,5 +21,8 @@ jobs:
           sshpass -e ssh -o stricthostkeychecking=no ${{ secrets.APP_USER }}@${{ secrets.APP_HOST }}
           "cd www/ &&
           git pull &&
+          php bin/console doctrine:cache:clear-metadata &&
+          php bin/console doctrine:cache:clear-query &&
+          php bin/console doctrine:cache:clear-result &&
           php bin/console doctrine:migrations:migrate &&
           composer install"
