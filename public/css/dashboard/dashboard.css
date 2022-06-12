@@ -1,0 +1,5 @@
+.logo-custom .logo,
+.responsive-logo .logo {
+  width: 20em;
+  padding-right: 1rem !important;
+}

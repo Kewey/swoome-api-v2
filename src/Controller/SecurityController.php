@@ -21,7 +21,7 @@ class SecurityController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('@EasyAdmin/page/login.html.twig', [
+        return $this->render('/dashboard/login.html.twig', [
             // parameters usually defined in Symfony login forms
             'error' => $error,
             'last_username' => $lastUsername,
@@ -38,7 +38,7 @@ class SecurityController extends AbstractController
             // use this method to display a custom favicon: the given path is passed
             // "as is" to the Twig asset() function:
             // <link rel="shortcut icon" href="{{ asset('...') }}">
-            'favicon_path' => '/favicon-admin.svg',
+            'favicon_path' => '/logos/favicon.png',
 
             // the title visible above the login form (define this option only if you are
             // rendering the login template in a regular Symfony controller; when rendering

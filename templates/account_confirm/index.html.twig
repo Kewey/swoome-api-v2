@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+{% block title %}Confirmation de compte - Swoome
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" href="{{ asset('/css/dashboard/login.css') }}">
+	{{ parent() }}
+{% endblock %}
+
+{% block body %}
+	{% for label, messages in app.flashes %}
+		{% for message in messages %}
+			<div class="alert alert-success flash-{{ label }}">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+	<script>
+		(function () {
+var app = {
+launchApp: function () {
+setTimeout(window.location.replace("com.kewey.swoome://"), 2000);
+this.timer = setTimeout(this.openWebApp, 3000);
+},
+
+openWebApp: function () {
+window.location.replace("https://play.google.com/store/apps/details?id=com.kewey.swoome");
+}
+};
+
+app.launchApp();
+})();
+	</script>
+{% endblock body %}

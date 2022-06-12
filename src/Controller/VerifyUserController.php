@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Factory\JsonResponseFactory;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,19 +20,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class VerifyUserController extends AbstractController
 {
-    public function __construct(VerifyEmailHelperInterface $verifyEmailHelper, MailerInterface $mailer, JsonResponseFactory $jsonResponseFactory)
+    public function __construct(VerifyEmailHelperInterface $verifyEmailHelper, MailerInterface $mailer, JsonResponseFactory $jsonResponseFactory, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->verifyEmailHelper = $verifyEmailHelper;
         $this->mailer = $mailer;
         $this->jsonResponseFactory = $jsonResponseFactory;
-    }
-
-    /**
-     * @Route("/base", name="app_base")
-     */
-    public function basicTwig()
-    {
-        return $this->render('base.html.twig', []);
+        $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
     /**
@@ -56,7 +50,7 @@ class VerifyUserController extends AbstractController
         $user->setIsVerified(true);
         $entityManager->flush();
         $this->addFlash('success', 'Compte vérifié! Vous pouvez maintenant vous connecter.');
-        return $this->redirectToRoute('app_base');
+        return $this->render('account_confirm/index.html.twig', []);
     }
 
     /**

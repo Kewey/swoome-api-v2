@@ -8,6 +8,7 @@ use App\Entity\ExpenseType;
 use App\Entity\Group;
 use App\Entity\GroupType;
 use App\Entity\User;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -41,7 +42,8 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('<img class="pe-3" src="./logos/logo.png">');
+            ->setTitle('<img class="logo" src="./logos/logo.png">')
+            ->setFaviconPath('/logos/favicon.png');
     }
 
     public function configureMenuItems(): iterable
@@ -56,5 +58,10 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Groupes', 'fas fa-user-group', Group::class),
             MenuItem::linkToCrud('Utilisateurs', 'fa fa-user', User::class),
         ];
+    }
+
+    public function configureAssets(): Assets
+    {
+        return Assets::new()->addCssFile('css/dashboard/dashboard.css');
     }
 }
