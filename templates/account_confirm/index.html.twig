@@ -3,7 +3,7 @@
 {% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" href="{{ asset('/css/dashboard/login.css') }}">
+	<link rel="stylesheet" href="{{ asset('/css/account_confirm/index.css') }}">
 	{{ parent() }}
 {% endblock %}
 
@@ -16,19 +16,15 @@
 		{% endfor %}
 	{% endfor %}
 	<script>
-		(function () {
-var app = {
-launchApp: function () {
-setTimeout(window.location.replace("com.kewey.swoome://"), 2000);
-this.timer = setTimeout(this.openWebApp, 3000);
+		function launchApp() {
+window.location.replace("com.kewey.swoome://");
+setTimeout(openWebApp, 2000);
 },
 
-openWebApp: function () {
+function openWebApp() {
 window.location.replace("https://play.google.com/store/apps/details?id=com.kewey.swoome");
-}
 };
 
-app.launchApp();
-})();
+setTimeout(launchApp, 2000);
 	</script>
-{% endblock body %}
+{% endblock body %}{% endblock body %}{% endblock body %}{% endblock body %}

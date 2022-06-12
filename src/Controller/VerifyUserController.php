@@ -49,7 +49,7 @@ class VerifyUserController extends AbstractController
         }
         $user->setIsVerified(true);
         $entityManager->flush();
-        $this->addFlash('success', 'Compte vérifié! Vous pouvez maintenant vous connecter.');
+        $this->addFlash('success', 'Compte vérifié! Vous pouvez maintenant vous connecter. Vous allez être redirigé vers l\'application Swoome.');
         return $this->render('account_confirm/index.html.twig', []);
     }
 
