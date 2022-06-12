@@ -229,6 +229,18 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
+    "sentry/sentry-symfony": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "9746f0823302d7980e5273ef7a69ef3f5ac80914"
+        },
+        "files": [
+            "./config/packages/sentry.yaml"
+        ]
+    },
     "stella-maris/clock": {
         "version": "0.1.4"
     },
