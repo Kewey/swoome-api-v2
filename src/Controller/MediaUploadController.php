@@ -7,14 +7,13 @@ use App\Entity\Media;
 use App\Factory\JsonResponseFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpKernel\Attribute\AsController;
 use Aws\S3\S3Client;
 use Aws\S3\Exception\S3Exception;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Uid\Uuid;
 
+#[AsController]
 class MediaUploadController extends AbstractController
 {
     public function __construct(
@@ -24,11 +23,8 @@ class MediaUploadController extends AbstractController
         $this->entityManager = $entityManager;
         $this->jsonResponseFactory = $jsonResponseFactory;
     }
-    /**
-     * @Route("/api/media_upload", methods={"POST"}, name="media_upload")
-     * @return Response
-     */
-    public function __invoke(Request $request): Response
+
+    public function __invoke(): Media
     {
         if (isset($_FILES['file'])) {
             $uuid = Uuid::v4();
@@ -56,15 +52,9 @@ class MediaUploadController extends AbstractController
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        // Print the body of the result by indexing into the result object.
-
-
         $media = new Media();
         $media->setUrl($result->get('ObjectURL'));
 
-        $this->entityManager->persist($media);
-        $this->entityManager->flush();
-
-        return $this->jsonResponseFactory->create($media);
+        return $media;
     }
 }

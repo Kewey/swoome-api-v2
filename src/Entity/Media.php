@@ -3,15 +3,43 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\MediaUploadController;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
-#[ApiResource(attributes: [
-    'normalization_context' => ['groups' => ['media:read']],
-    'denormalization_context' => ['groups' => ['media:write']],
-],)]
+#[ApiResource(
+    attributes: [
+        'normalization_context' => ['groups' => ['media:read']],
+        'denormalization_context' => ['groups' => ['media:write']],
+    ],
+    collectionOperations: [
+        'get',
+        'post' => [
+            'controller' => MediaUploadController::class,
+            'deserialize' => false,
+            'openapi_context' => [
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'file' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ]
+)]
 class Media
 {
     #[ORM\Id]
@@ -26,6 +54,8 @@ class Media
     #[ORM\OneToOne(mappedBy: 'avatar', targetEntity: User::class, cascade: ['persist'])]
     #[Groups(["media:write", "media:read"])]
     private $user;
+
+    public ?File $file = null;
 
     public function getId(): ?int
     {

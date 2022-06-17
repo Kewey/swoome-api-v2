@@ -56,7 +56,7 @@ security:
     - { path: ^/api/auth/register, roles: PUBLIC_ACCESS }
     - { path: ^/api/auth/refresh, roles: PUBLIC_ACCESS }
     - { path: ^/api/auth/resend_mail, roles: PUBLIC_ACCESS }
-    - { path: ^/api/media_upload, roles: PUBLIC_ACCESS }
+    - { path: ^/api/media, roles: PUBLIC_ACCESS }
     - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/admin, roles: ROLE_ADMIN }
     # - { path: ^/profile, roles: ROLE_USER }
