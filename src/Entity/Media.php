@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 #[ApiResource(
+    shortName: "medias",
     attributes: [
         'normalization_context' => ['groups' => ['media:read']],
         'denormalization_context' => ['groups' => ['media:write']],
@@ -38,7 +39,7 @@ use Symfony\Component\HttpFoundation\File\File;
                 ],
             ],
         ],
-    ]
+    ],
 )]
 class Media
 {
@@ -48,7 +49,7 @@ class Media
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['media:read', 'media:write', "user:read"])]
+    #[Groups(['media:read', 'media:write', "user:read", "group:read", "expense:read", 'balance:read', 'refund:read'])]
     private $url;
 
     #[ORM\OneToOne(mappedBy: 'avatar', targetEntity: User::class, cascade: ['persist'])]
