@@ -49,11 +49,11 @@ class Media
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['media:read', 'media:write', "user:read", "group:read", "expense:read", 'balance:read', 'refund:read'])]
+    #[Groups(["media:read", "media:write", "user:read", "group:read", "expense:read", "balance:read", "refund:read"])]
     private $url;
 
     #[ORM\OneToOne(mappedBy: 'avatar', targetEntity: User::class, cascade: ['persist'])]
-    #[Groups(["media:write", "media:read"])]
+    #[Groups(["media:write"])]
     private $user;
 
     public ?File $file = null;

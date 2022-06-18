@@ -115,8 +115,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["user:read", "user:write"])]
     private $pushToken;
 
-    #[Groups(["user:read",  "user:write"])]
     #[ORM\OneToOne(inversedBy: 'user', targetEntity: Media::class, cascade: ['persist', 'remove'])]
+    #[Groups(["user:read", "user:write", "media:read", "group:read", "expense:read", "balance:read", "refund:read"])]
     private $avatar;
 
     public function __construct()

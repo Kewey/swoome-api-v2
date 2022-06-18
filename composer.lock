@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "93194dd28ef0ff2a6ad471ffd2726ff6",
+    "content-hash": "ba5d7fad0e63142f845b5c57583622c0",
     "packages": [
         {
             "name": "api-platform/core",
@@ -219,16 +219,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.225.2",
+            "version": "3.227.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "f846724ad842916061127d20da4fe4e129f7d4b8"
+                "reference": "88d803113ade68604ec03c591d65e1e44406ab8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f846724ad842916061127d20da4fe4e129f7d4b8",
-                "reference": "f846724ad842916061127d20da4fe4e129f7d4b8",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/88d803113ade68604ec03c591d65e1e44406ab8e",
+                "reference": "88d803113ade68604ec03c591d65e1e44406ab8e",
                 "shasum": ""
             },
             "require": {
@@ -236,9 +236,9 @@
                 "ext-json": "*",
                 "ext-pcre": "*",
                 "ext-simplexml": "*",
-                "guzzlehttp/guzzle": "^5.3.3 || ^6.5.6 || ^7.4.3",
+                "guzzlehttp/guzzle": "^6.5.7 || ^7.4.4",
                 "guzzlehttp/promises": "^1.4.0",
-                "guzzlehttp/psr7": "^1.7.0 || ^2.1.1",
+                "guzzlehttp/psr7": "^1.8.5 || ^2.3",
                 "mtdowling/jmespath.php": "^2.6",
                 "php": ">=5.5"
             },
@@ -304,9 +304,9 @@
             "support": {
                 "forum": "https://forums.aws.amazon.com/forum.jspa?forumID=80",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.225.2"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.227.0"
             },
-            "time": "2022-06-10T19:03:26+00:00"
+            "time": "2022-06-17T18:15:06+00:00"
         },
         {
             "name": "clue/stream-filter",
@@ -835,16 +835,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "3.3.6",
+            "version": "3.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "9e7f76dd1cde81c62574fdffa5a9c655c847ad21"
+                "reference": "9f79d4650430b582f4598fe0954ef4d52fbc0a8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/9e7f76dd1cde81c62574fdffa5a9c655c847ad21",
-                "reference": "9e7f76dd1cde81c62574fdffa5a9c655c847ad21",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/9f79d4650430b582f4598fe0954ef4d52fbc0a8a",
+                "reference": "9f79d4650430b582f4598fe0954ef4d52fbc0a8a",
                 "shasum": ""
             },
             "require": {
@@ -859,11 +859,11 @@
             "require-dev": {
                 "doctrine/coding-standard": "9.0.0",
                 "jetbrains/phpstorm-stubs": "2022.1",
-                "phpstan/phpstan": "1.6.3",
+                "phpstan/phpstan": "1.7.13",
                 "phpstan/phpstan-strict-rules": "^1.2",
                 "phpunit/phpunit": "9.5.20",
                 "psalm/plugin-phpunit": "0.16.1",
-                "squizlabs/php_codesniffer": "3.6.2",
+                "squizlabs/php_codesniffer": "3.7.0",
                 "symfony/cache": "^5.2|^6.0",
                 "symfony/console": "^2.7|^3.0|^4.0|^5.0|^6.0",
                 "vimeo/psalm": "4.23.0"
@@ -926,7 +926,7 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/dbal/issues",
-                "source": "https://github.com/doctrine/dbal/tree/3.3.6"
+                "source": "https://github.com/doctrine/dbal/tree/3.3.7"
             },
             "funding": [
                 {
@@ -942,7 +942,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-05-02T17:21:01+00:00"
+            "time": "2022-06-13T21:43:03+00:00"
         },
         {
             "name": "doctrine/deprecations",
@@ -1711,16 +1711,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "2.12.2",
+            "version": "2.12.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/orm.git",
-                "reference": "8291a7f09b12d14783ed6537b4586583d155869e"
+                "reference": "c05e1709e9ffb9abe8d37260a78975cc816ee385"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/orm/zipball/8291a7f09b12d14783ed6537b4586583d155869e",
-                "reference": "8291a7f09b12d14783ed6537b4586583d155869e",
+                "url": "https://api.github.com/repos/doctrine/orm/zipball/c05e1709e9ffb9abe8d37260a78975cc816ee385",
+                "reference": "c05e1709e9ffb9abe8d37260a78975cc816ee385",
                 "shasum": ""
             },
             "require": {
@@ -1749,10 +1749,10 @@
                 "doctrine/annotations": "^1.13",
                 "doctrine/coding-standard": "^9.0",
                 "phpbench/phpbench": "^0.16.10 || ^1.0",
-                "phpstan/phpstan": "~1.4.10 || 1.6.3",
+                "phpstan/phpstan": "~1.4.10 || 1.7.13",
                 "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
                 "psr/log": "^1 || ^2 || ^3",
-                "squizlabs/php_codesniffer": "3.6.2",
+                "squizlabs/php_codesniffer": "3.7.0",
                 "symfony/cache": "^4.4 || ^5.4 || ^6.0",
                 "symfony/yaml": "^3.4 || ^4.0 || ^5.0 || ^6.0",
                 "vimeo/psalm": "4.23.0"
@@ -1804,9 +1804,9 @@
             ],
             "support": {
                 "issues": "https://github.com/doctrine/orm/issues",
-                "source": "https://github.com/doctrine/orm/tree/2.12.2"
+                "source": "https://github.com/doctrine/orm/tree/2.12.3"
             },
-            "time": "2022-05-02T19:10:07+00:00"
+            "time": "2022-06-16T13:42:23+00:00"
         },
         {
             "name": "doctrine/persistence",
@@ -3117,16 +3117,16 @@
         },
         {
             "name": "lexik/jwt-authentication-bundle",
-            "version": "v2.15.1",
+            "version": "v2.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lexik/LexikJWTAuthenticationBundle.git",
-                "reference": "b7a640b135fc572d69375d97e4a87524a5e886d0"
+                "reference": "0a0922a2442c52724c09deb099b263300cc12d54"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/b7a640b135fc572d69375d97e4a87524a5e886d0",
-                "reference": "b7a640b135fc572d69375d97e4a87524a5e886d0",
+                "url": "https://api.github.com/repos/lexik/LexikJWTAuthenticationBundle/zipball/0a0922a2442c52724c09deb099b263300cc12d54",
+                "reference": "0a0922a2442c52724c09deb099b263300cc12d54",
                 "shasum": ""
             },
             "require": {
@@ -3221,7 +3221,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lexik/LexikJWTAuthenticationBundle/issues",
-                "source": "https://github.com/lexik/LexikJWTAuthenticationBundle/tree/v2.15.1"
+                "source": "https://github.com/lexik/LexikJWTAuthenticationBundle/tree/v2.16.0"
             },
             "funding": [
                 {
@@ -3233,7 +3233,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-04-08T12:31:19+00:00"
+            "time": "2022-06-12T16:22:12+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -3975,16 +3975,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.6.2",
+            "version": "1.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "76150ae7512439b4e6903db834e4a327596b617d"
+                "reference": "4a07085f74cb1f3fc7103efa537d9f00ebb74ec7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/76150ae7512439b4e6903db834e4a327596b617d",
-                "reference": "76150ae7512439b4e6903db834e4a327596b617d",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/4a07085f74cb1f3fc7103efa537d9f00ebb74ec7",
+                "reference": "4a07085f74cb1f3fc7103efa537d9f00ebb74ec7",
                 "shasum": ""
             },
             "require": {
@@ -4014,9 +4014,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.6.2"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.6.3"
             },
-            "time": "2022-06-10T09:29:33+00:00"
+            "time": "2022-06-14T11:40:08+00:00"
         },
         {
             "name": "psr/cache",
@@ -6022,16 +6022,16 @@
         },
         {
             "name": "symfony/flex",
-            "version": "v2.2.1",
+            "version": "v2.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/flex.git",
-                "reference": "581a978fbcc878a3fef24c9560ac4df3720101a3"
+                "reference": "78510b1be591433513c8087deec24e9fd90d110d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/flex/zipball/581a978fbcc878a3fef24c9560ac4df3720101a3",
-                "reference": "581a978fbcc878a3fef24c9560ac4df3720101a3",
+                "url": "https://api.github.com/repos/symfony/flex/zipball/78510b1be591433513c8087deec24e9fd90d110d",
+                "reference": "78510b1be591433513c8087deec24e9fd90d110d",
                 "shasum": ""
             },
             "require": {
@@ -6067,7 +6067,7 @@
             "description": "Composer plugin for Symfony",
             "support": {
                 "issues": "https://github.com/symfony/flex/issues",
-                "source": "https://github.com/symfony/flex/tree/v2.2.1"
+                "source": "https://github.com/symfony/flex/tree/v2.2.2"
             },
             "funding": [
                 {
@@ -6083,7 +6083,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-06-06T15:53:14+00:00"
+            "time": "2022-06-15T06:51:57+00:00"
         },
         {
             "name": "symfony/form",
