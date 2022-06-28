@@ -14,10 +14,6 @@ security:
         class: App\Entity\User
         property: email
   firewalls:
-    api_token_refresh:
-      pattern: ^/api/auth/refresh
-      stateless: true
-      refresh_jwt: ~
     login:
       user_checker: App\Security\UserChecker
       pattern: ^/api/auth
@@ -32,6 +28,8 @@ security:
       pattern: ^/api
       stateless: true
       jwt: ~
+      refresh_jwt:
+        check_path: /api/auth/refresh
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
@@ -41,6 +39,8 @@ security:
       form_login:
         login_path: /
         check_path: /
+        username_parameter: email
+        password_parameter: password
       logout:
         path: app_logout
       # activate different ways to authenticate
