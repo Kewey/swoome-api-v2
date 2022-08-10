@@ -98,7 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["user:write"])]
     private $participatedExpenses;
 
-    #[ORM\OneToMany(mappedBy: 'balanceUser', targetEntity: Balance::class, cascade: ['persist'])]
+    #[ORM\OneToMany(mappedBy: 'balanceUser', targetEntity: Balance::class, cascade: ['persist', 'remove'])]
     private $balances;
 
     #[ORM\OneToMany(mappedBy: 'refunder', targetEntity: Refund::class, orphanRemoval: true)]
