@@ -33,7 +33,7 @@ class VerifyUserController extends AbstractController
      */
     public function verifyUserEmail(Request $request, VerifyEmailHelperInterface $verifyEmailHelper, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
     {
-        /* $user = $userRepository->find($request->query->get('id'));
+        $user = $userRepository->find($request->query->get('id'));
         if (!$user) {
             throw $this->createNotFoundException();
         }
@@ -48,7 +48,7 @@ class VerifyUserController extends AbstractController
             return $this->redirectToRoute('app_base');
         }
         $user->setIsVerified(true);
-        $entityManager->flush();*/
+        $entityManager->flush();
         $this->addFlash('success', 'Compte vérifié! Vous pouvez maintenant vous connecter. Vous allez être redirigé vers l\'application Swoome.');
         return $this->render('account_confirm/index.html.twig', []);
     }
