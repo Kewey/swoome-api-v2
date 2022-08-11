@@ -38,7 +38,7 @@ class Refund
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'refunds')]
     #[Groups(["group:read", 'refund:read'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     private $refunder;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'refundsReceiver')]

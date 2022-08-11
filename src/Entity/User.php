@@ -89,19 +89,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Group::class, mappedBy: 'members', cascade: ["persist"])]
     private $groups;
 
-    #[ORM\OneToMany(mappedBy: 'madeBy', targetEntity: Expense::class)]
+    #[ORM\OneToMany(mappedBy: 'madeBy', targetEntity: Expense::class, cascade: ['persist', 'remove'])]
     #[Groups(["user:write"])]
     #[ApiSubresource]
     private $createdExpenses;
 
-    #[ORM\ManyToMany(targetEntity: Expense::class, mappedBy: 'participants')]
+    #[ORM\ManyToMany(targetEntity: Expense::class, orphanRemoval: true, mappedBy: 'participants')]
     #[Groups(["user:write"])]
     private $participatedExpenses;
 
     #[ORM\OneToMany(mappedBy: 'balanceUser', targetEntity: Balance::class, cascade: ['persist', 'remove'])]
     private $balances;
 
-    #[ORM\OneToMany(mappedBy: 'refunder', targetEntity: Refund::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'refunder', targetEntity: Refund::class, orphanRemoval: false, cascade: ['remove'])]
+    #[ORM\JoinColumn(onDelete: "CASCADE")]
     private $refunds;
 
     #[ORM\OneToMany(mappedBy: 'receiver', targetEntity: Refund::class, orphanRemoval: true)]
