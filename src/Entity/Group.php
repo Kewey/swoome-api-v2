@@ -41,7 +41,7 @@ class Group
     #[Groups(["group:write", "group:read"])]
     private $members;
 
-    #[ORM\OneToMany(mappedBy: 'expenseGroup', targetEntity: Expense::class)]
+    #[ORM\OneToMany(mappedBy: 'expenseGroup', targetEntity: Expense::class, cascade: ['persist', 'remove'])]
     #[Groups(["group:write", "group:read"])]
     #[ApiSubresource]
     private $expenses;
@@ -55,7 +55,7 @@ class Group
     #[Groups(["group:read", "group:write"])]
     private $code;
 
-    #[ORM\OneToMany(mappedBy: 'refundGroup', targetEntity: Refund::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'refundGroup', targetEntity: Refund::class, orphanRemoval: true, cascade: ['persist'])]
     #[ApiSubresource]
     #[Groups(["refund:write", "group:write", "group:read"])]
     private $refunds;

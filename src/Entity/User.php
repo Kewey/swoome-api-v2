@@ -94,7 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ApiSubresource]
     private $createdExpenses;
 
-    #[ORM\ManyToMany(targetEntity: Expense::class, orphanRemoval: true, mappedBy: 'participants')]
+    #[ORM\ManyToMany(targetEntity: Expense::class, orphanRemoval: true, mappedBy: 'participants', cascade: ['remove'])]
     #[Groups(["user:write"])]
     private $participatedExpenses;
 

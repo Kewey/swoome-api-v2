@@ -4,6 +4,7 @@ namespace App\EventListener;
 
 use App\Entity\Expense;
 use App\Entity\Refund;
+use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\EntityManagerInterface;
@@ -82,6 +83,12 @@ class ExpenseSubscriber implements EventSubscriberInterface
 
         if (!$entity instanceof Expense) {
             return;
+        }
+
+        foreach ($this->entityManager->getUnitOfWork()->getScheduledEntityDeletions() as $entity) {;
+            if ($entity instanceof User) {
+                return;
+            }
         }
 
         $this->handleRefunds($entity);
