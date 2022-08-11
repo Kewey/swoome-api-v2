@@ -65,9 +65,6 @@ class Balance
                 if ($expense->getParticipants()->count() == 1 && !$expense->getParticipants()->contains($this->balanceUser)) {
                     $balanceValue += $expense->getPrice();
                 } else {
-                    if ($expense->getParticipants()->count() === 0) {
-                        dd($expense);
-                    }
                     $balanceValue += $expense->getPrice() - ($expense->getPrice() / $expense->getParticipants()->count());
                 }
             } elseif ($expense->getParticipants()->contains($this->balanceUser)) {
