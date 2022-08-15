@@ -27,7 +27,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ],
     ],
 )]
-#[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'price'], arguments: ['orderParameterName' => 'order'])]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'name', 'price', 'createdAt'], arguments: ['orderParameterName' => 'order'])]
 #[ApiFilter(SearchFilter::class, properties: ['type' => 'exact'])]
 class Expense
 {
